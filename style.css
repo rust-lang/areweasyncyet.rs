@@ -72,12 +72,12 @@ code {
   color: red;
 }
 
-.not-stablized {
+.not-stabilized {
   font-weight: bold;
   color: darkred;
 }
 
-.stablized, .stable {
+.stabilized, .stable {
   color: darkgreen;
 }
 

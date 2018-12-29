@@ -1,5 +1,14 @@
 const FEATURES = [
   {
+    title: '`impl Trait` in return position',
+    rfc: '1522-conservative-impl-trait',
+    tracking: '34511',
+    stablized: {
+      version: '1.26',
+      pr: '49255',
+    },
+  },
+  {
     title: '`async` as a keyword in 2018 edition',
     stablized: {
       version: '1.28',

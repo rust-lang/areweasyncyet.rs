@@ -1,0 +1,97 @@
+@font-face {
+  font-family: "Fira Sans";
+  src: local("Fira Sans Regular"),
+    local("FiraSans-Regular"),
+    url("/fonts/FiraSans-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Fira Sans";
+  src: local("Fira Sans Bold"),
+    local("FiraSans-Bold"),
+    url("/fonts/FiraSans-Bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Fira Mono";
+  src: local("Fira Mono Regular"),
+    local("FiraMono-Regular"),
+    url("/fonts/FiraMono-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+
+:root {
+  font: 12px/1.5 Fira Sans, Helvetica, Arial, sans-serif;
+  color: #222;
+}
+
+body {
+  font-size: 2.25rem;
+}
+
+h1, h2 {
+  line-height: 1.2;
+  margin: 0;
+}
+
+h1 {
+  font-size: 8rem;
+}
+
+h2 {
+  font-size: 4.2rem;
+}
+
+a {
+  color: #3873ad;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code {
+  display: inline-block;
+  padding: 0 0.1em;
+  border-radius: .5rem;
+  font-family: Fira Mono;
+  background-color: #f5f5f5;
+}
+
+.not-stablized {
+  font-weight: bold;
+  color: red;
+}
+
+.stablized, .stable {
+  color: darkgreen;
+}
+
+.beta {
+  color: gold;
+}
+
+.nightly {
+  color: purple;
+}
+
+.stable, .beta, .nightly {
+  font-weight: bold;
+}
+
+#github {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
+  color: transparent;
+}

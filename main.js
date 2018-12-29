@@ -49,6 +49,14 @@ const FEATURES = [
     rfc: '2394-async_await',
     tracking: '50547',
   },
+  {
+    title: 'better syntax for `await` expression',
+    unresolved: '2394-async_await#final-syntax-for-the-await-expression',
+  },
+  {
+    title: 'async iterators or stream',
+    unresolved: '2394-async_await#generators-and-streams',
+  },
 ];
 
 // The following code is modified from forge.rust-lang.org
@@ -61,16 +69,23 @@ const stableMinorVersion = releases + epochRelease;
 const betaMinorVersion = releases + epochRelease + 1;
 
 const $features = document.getElementById('features');
-for (const { title, rfc, tracking, stablized } of FEATURES) {
+for (const { title, rfc, tracking, stablized, unresolved } of FEATURES) {
   const $li = $c('li');
+  $features.insertBefore($li, $features.firstChild);
   // Title
   $li.innerHTML = title.replace(
     /`(.+?)`/g,
     (match, p1) => `<code>${p1}</code>`,
   );
   const appendText = text => $li.appendChild(document.createTextNode(text))
-  // Stablization information
   appendText(' ');
+  if (unresolved) {
+    const $unresolved = rfcLink(unresolved, 'unresolved');
+    $unresolved.classList.add('unresolved');
+    $li.appendChild($unresolved);
+    continue;
+  }
+  // Stablization information
   if (!stablized) {
     $li.appendChild($c('span', {
       className: 'not-stablized',
@@ -108,20 +123,7 @@ for (const { title, rfc, tracking, stablized } of FEATURES) {
   }
   // RFC link
   if (rfc) {
-    const $rfc = $c('a', {
-      className: 'rfc',
-      target: '_blank',
-    });
-    const dash = rfc.indexOf('-');
-    if (dash === -1) {
-      $rfc.href = `https://github.com/rust-lang/rfcs/pull/${rfc}`;
-      $rfc.textContent = `RFC ${rfc}`;
-    } else {
-      $rfc.href = `https://rust-lang.github.io/rfcs/${rfc}.html`;
-      $rfc.textContent = `RFC ${rfc.slice(0, dash)}`;
-      $rfc.classList.add('merged');
-    }
-    $li.appendChild($rfc);
+    $li.appendChild(rfcLink(rfc));
   }
   // Tracking issue link
   if (tracking) {
@@ -136,7 +138,6 @@ for (const { title, rfc, tracking, stablized } of FEATURES) {
       target: '_blank',
     }));
   }
-  $features.insertBefore($li, $features.firstChild);
 }
 
 function $c(tag, props = {}) {
@@ -145,4 +146,27 @@ function $c(tag, props = {}) {
     elem[prop] = props[prop];
   }
   return elem;
+}
+
+function rfcLink(rfc, text = null) {
+  const $rfc = $c('a', {
+    className: 'rfc',
+    target: '_blank',
+  });
+  const dash = rfc.indexOf('-');
+  let rfcId;
+  if (dash === -1) {
+    $rfc.href = `https://github.com/rust-lang/rfcs/pull/${rfc}`;
+    rfcId = rfc;
+  } else {
+    const [page, frag] = rfc.split('#');
+    $rfc.href = `https://rust-lang.github.io/rfcs/${page}.html`;
+    if (frag) {
+      $rfc.href += `#${frag}`;
+    }
+    rfcId = rfc.slice(0, dash);
+    $rfc.classList.add('merged');
+  }
+  $rfc.textContent = text ? text : `RFC ${rfcId}`;
+  return $rfc;
 }

@@ -67,9 +67,14 @@ code {
   background-color: #f5f5f5;
 }
 
-.not-stablized {
+.unresolved {
   font-weight: bold;
   color: red;
+}
+
+.not-stablized {
+  font-weight: bold;
+  color: darkred;
 }
 
 .stablized, .stable {

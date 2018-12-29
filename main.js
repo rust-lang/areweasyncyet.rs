@@ -7,15 +7,6 @@ const FEATURES = [
     },
   },
   {
-    title: 'raw identifiers (`r#ident`)',
-    rfc: '2151-raw-identifiers',
-    tracking: '48589',
-    stablized: {
-      version: '1.30',
-      pr: '53236',
-    },
-  },
-  {
     title: '2018 edition',
     stablized: {
       version: '1.31',

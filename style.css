@@ -68,12 +68,12 @@ code {
   background-color: #f5f5f5;
 }
 
-.not-stablized {
+.not-stabilized {
   font-weight: bold;
   color: red;
 }
 
-.stablized, .stable {
+.stabilized, .stable {
   color: darkgreen;
 }
 

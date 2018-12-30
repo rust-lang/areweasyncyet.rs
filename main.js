@@ -97,7 +97,6 @@ for (const { title, rfc, tracking, stablized, unresolved } of FEATURES) {
       className: 'stablized',
       textContent: `stablized in ${version}`,
       href: `https://github.com/rust-lang/rust/pull/${pr}`,
-      target: '_blank',
     }));
     appendText(' ');
     const [_, minor] = version.split('.').map(n => parseInt(n, 10));
@@ -135,7 +134,6 @@ for (const { title, rfc, tracking, stablized, unresolved } of FEATURES) {
       href: `https://github.com/rust-lang/rust/issues/${tracking}`,
       textContent: `#${tracking}`,
       title: 'Tracking issue',
-      target: '_blank',
     }));
   }
 }
@@ -151,7 +149,6 @@ function $c(tag, props = {}) {
 function rfcLink(rfc, text = null) {
   const $rfc = $c('a', {
     className: 'rfc',
-    target: '_blank',
   });
   const dash = rfc.indexOf('-');
   let rfcId;

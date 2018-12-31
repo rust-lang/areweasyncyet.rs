@@ -77,7 +77,7 @@ for (const { title, rfc, tracking, stabilized, unresolved } of FEATURES) {
     /`(.+?)`/g,
     (match, p1) => `<code>${p1}</code>`,
   );
-  const appendText = text => $li.appendChild(document.createTextNode(text))
+  const appendText = text => $li.appendChild(document.createTextNode(text));
   appendText(' ');
   if (unresolved) {
     const $unresolved = rfcLink(unresolved, 'unresolved');

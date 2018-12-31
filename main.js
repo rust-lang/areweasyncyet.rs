@@ -3,21 +3,21 @@ const FEATURES = [
     title: '`impl Trait` in return position',
     rfc: '1522-conservative-impl-trait',
     tracking: '34511',
-    stablized: {
+    stabilized: {
       version: '1.26',
       pr: '49255',
     },
   },
   {
     title: '`async` as a keyword in 2018 edition',
-    stablized: {
+    stabilized: {
       version: '1.28',
       pr: '50307',
     },
   },
   {
     title: '2018 edition',
-    stablized: {
+    stabilized: {
       version: '1.31',
       pr: '54057',
     },
@@ -26,7 +26,7 @@ const FEATURES = [
     title: '`Pin` as a method receiver',
     rfc: '2362',
     tracking: '55786',
-    stablized: {
+    stabilized: {
       version: '1.33',
       pr: '56805',
     },
@@ -35,7 +35,7 @@ const FEATURES = [
     title: 'Pin APIs',
     rfc: '2349-pin',
     tracking: '49150',
-    stablized: {
+    stabilized: {
       version: '1.33',
       pr: '56939',
     },
@@ -69,7 +69,7 @@ const stableMinorVersion = releases + epochRelease;
 const betaMinorVersion = releases + epochRelease + 1;
 
 const $features = document.getElementById('features');
-for (const { title, rfc, tracking, stablized, unresolved } of FEATURES) {
+for (const { title, rfc, tracking, stabilized, unresolved } of FEATURES) {
   const $li = $c('li');
   $features.insertBefore($li, $features.firstChild);
   // Title
@@ -85,17 +85,17 @@ for (const { title, rfc, tracking, stablized, unresolved } of FEATURES) {
     $li.appendChild($unresolved);
     continue;
   }
-  // Stablization information
-  if (!stablized) {
+  // Stabilization information
+  if (!stabilized) {
     $li.appendChild($c('span', {
-      className: 'not-stablized',
-      textContent: 'not stablized yet',
+      className: 'not-stabilized',
+      textContent: 'not stabilized yet',
     }));
   } else {
-    const { version, pr } = stablized;
+    const { version, pr } = stabilized;
     $li.appendChild($c('a', {
-      className: 'stablized',
-      textContent: `stablized in ${version}`,
+      className: 'stabilized',
+      textContent: `stabilized in ${version}`,
       href: `https://github.com/rust-lang/rust/pull/${pr}`,
     }));
     appendText(' ');

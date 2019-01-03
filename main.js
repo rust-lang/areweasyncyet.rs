@@ -1,4 +1,4 @@
-const FEATURES = [
+const BLOCKERS = [
   {
     title: '`impl Trait` in return position',
     rfc: '1522-conservative-impl-trait',
@@ -49,6 +49,9 @@ const FEATURES = [
     rfc: '2394-async_await',
     tracking: '50547',
   },
+];
+
+const EXTENSIONS = [
   {
     title: 'better syntax for `await` expression',
     unresolved: '2394-async_await#final-syntax-for-the-await-expression',
@@ -68,73 +71,77 @@ const releases = (today - epochDate) / releaseDuration | 0;
 const stableMinorVersion = releases + epochRelease;
 const betaMinorVersion = releases + epochRelease + 1;
 
-const $features = document.getElementById('features');
-for (const { title, rfc, tracking, stabilized, unresolved } of FEATURES) {
-  const $li = $c('li');
-  $features.insertBefore($li, $features.firstChild);
-  // Title
-  $li.innerHTML = title.replace(
-    /`(.+?)`/g,
-    (match, p1) => `<code>${p1}</code>`,
-  );
-  const appendText = text => $li.appendChild(document.createTextNode(text));
-  appendText(' ');
-  if (unresolved) {
-    const $unresolved = rfcLink(unresolved, 'unresolved');
-    $unresolved.classList.add('unresolved');
-    $li.appendChild($unresolved);
-    continue;
-  }
-  // Stabilization information
-  if (!stabilized) {
-    $li.appendChild($c('span', {
-      className: 'not-stabilized',
-      textContent: 'not stabilized yet',
-    }));
-  } else {
-    const { version, pr } = stabilized;
-    $li.appendChild($c('a', {
-      className: 'stabilized',
-      textContent: `stabilized in ${version}`,
-      href: `https://github.com/rust-lang/rust/pull/${pr}`,
-    }));
+fillList(BLOCKERS, document.getElementById('blockers'));
+fillList(EXTENSIONS, document.getElementById('extensions'));
+
+function fillList(items, elem) {
+  for (const { title, rfc, tracking, stabilized, unresolved } of items) {
+    const $li = $c('li');
+    elem.insertBefore($li, elem.firstChild);
+    // Title
+    $li.innerHTML = title.replace(
+      /`(.+?)`/g,
+      (match, p1) => `<code>${p1}</code>`,
+    );
+    const appendText = text => $li.appendChild(document.createTextNode(text));
     appendText(' ');
-    const [_, minor] = version.split('.').map(n => parseInt(n, 10));
-    if (minor <= stableMinorVersion) {
+    if (unresolved) {
+      const $unresolved = rfcLink(unresolved, 'unresolved');
+      $unresolved.classList.add('unresolved');
+      $li.appendChild($unresolved);
+      continue;
+    }
+    // Stabilization information
+    if (!stabilized) {
       $li.appendChild($c('span', {
-        className: 'stable',
-        textContent: '[in stable]',
-      }));
-    } else if (minor == betaMinorVersion) {
-      $li.appendChild($c('span', {
-        className: 'beta',
-        textContent: '[in beta]',
+        className: 'not-stabilized',
+        textContent: 'not stabilized yet',
       }));
     } else {
-      $li.appendChild($c('span', {
-        className: 'nightly',
-        textContent: '[in nightly]',
+      const { version, pr } = stabilized;
+      $li.appendChild($c('a', {
+        className: 'stabilized',
+        textContent: `stabilized in ${version}`,
+        href: `https://github.com/rust-lang/rust/pull/${pr}`,
       }));
+      appendText(' ');
+      const [_, minor] = version.split('.').map(n => parseInt(n, 10));
+      if (minor <= stableMinorVersion) {
+        $li.appendChild($c('span', {
+          className: 'stable',
+          textContent: '[in stable]',
+        }));
+      } else if (minor == betaMinorVersion) {
+        $li.appendChild($c('span', {
+          className: 'beta',
+          textContent: '[in beta]',
+        }));
+      } else {
+        $li.appendChild($c('span', {
+          className: 'nightly',
+          textContent: '[in nightly]',
+        }));
+      }
     }
-  }
-  if (rfc || tracking) {
-    appendText(' / ');
-  }
-  // RFC link
-  if (rfc) {
-    $li.appendChild(rfcLink(rfc));
-  }
-  // Tracking issue link
-  if (tracking) {
-    if (rfc) {
+    if (rfc || tracking) {
       appendText(' / ');
     }
-    $li.appendChild($c('a', {
-      className: 'tracking',
-      href: `https://github.com/rust-lang/rust/issues/${tracking}`,
-      textContent: `#${tracking}`,
-      title: 'Tracking issue',
-    }));
+    // RFC link
+    if (rfc) {
+      $li.appendChild(rfcLink(rfc));
+    }
+    // Tracking issue link
+    if (tracking) {
+      if (rfc) {
+        appendText(' / ');
+      }
+      $li.appendChild($c('a', {
+        className: 'tracking',
+        href: `https://github.com/rust-lang/rust/issues/${tracking}`,
+        textContent: `#${tracking}`,
+        title: 'Tracking issue',
+      }));
+    }
   }
 }
 

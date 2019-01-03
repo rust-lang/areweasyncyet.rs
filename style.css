@@ -5,7 +5,6 @@
     url("/fonts/FiraSans-Regular.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
-  font-display: block;
 }
 
 @font-face {
@@ -15,7 +14,6 @@
     url("/fonts/FiraSans-Bold.woff2") format("woff2");
   font-style: normal;
   font-weight: 700;
-  font-display: block;
 }
 
 @font-face {
@@ -25,7 +23,6 @@
     url("/fonts/FiraMono-Regular.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
-  font-display: block;
 }
 
 :root {

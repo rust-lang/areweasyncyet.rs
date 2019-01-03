@@ -25,6 +25,15 @@
   font-weight: 400;
 }
 
+@font-face {
+  font-family: "Fira Mono";
+  src: local("Fira Mono Bold"),
+    local("FiraMono-Bold"),
+    url("/fonts/FiraMono-Bold.subset.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+}
+
 :root {
   font: 12px/1.5 Fira Sans, Helvetica, Arial, sans-serif;
   color: #222;

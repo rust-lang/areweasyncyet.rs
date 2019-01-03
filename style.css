@@ -99,10 +99,38 @@ code {
   font-weight: bold;
 }
 
-#github {
+.github-ribbon {
   position: absolute;
   top: 0;
   right: 0;
   border: 0;
   color: transparent;
+  width: 130px;
+  height: 130px;
+  overflow: hidden;
+  border-bottom-left-radius: 100%;
+  border-radius: 0 65% 0 100%;
+}
+
+.github-ribbon::before {
+  content: "Fork me on GitHub";
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: center;
+  width: 200px;
+  height: 28px;
+  font-size: 14px;
+  line-height: 28px;
+  color: white;
+  transform-origin: 100% 0;
+  transform: translate(27px, 115px) rotate(45deg);
+  background-image: linear-gradient(
+    to bottom,
+    black 0, black 1px,
+    white 1px, white 2px,
+    black 2px, black 26px,
+    white 26px, white 27px,
+    black
+  );
 }

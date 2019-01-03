@@ -1,4 +1,4 @@
-const BLOCKERS = [
+const ASYNC_BLOCKERS = [
   {
     title: '`impl Trait` in return position',
     rfc: '1522-conservative-impl-trait',
@@ -45,13 +45,13 @@ const BLOCKERS = [
     rfc: '2592',
   },
   {
-    title: '`async`/`await` notation',
+    title: '`async`/`await` syntax',
     rfc: '2394-async_await',
     tracking: '50547',
   },
 ];
 
-const EXTENSIONS = [
+const ASYNC_EXTENSIONS = [
   {
     title: 'better syntax for `await` expression',
     unresolved: '2394-async_await#final-syntax-for-the-await-expression',
@@ -71,13 +71,14 @@ const releases = (today - epochDate) / releaseDuration | 0;
 const stableMinorVersion = releases + epochRelease;
 const betaMinorVersion = releases + epochRelease + 1;
 
-fillList(BLOCKERS, document.getElementById('blockers'));
-fillList(EXTENSIONS, document.getElementById('extensions'));
+fillList(ASYNC_BLOCKERS, 'async-blockers');
+fillList(ASYNC_EXTENSIONS, 'async-extensions');
 
-function fillList(items, elem) {
+function fillList(items, id) {
+  const $elem = document.getElementById(id);
   for (const { title, rfc, tracking, stabilized, unresolved } of items) {
     const $li = $c('li');
-    elem.insertBefore($li, elem.firstChild);
+    $elem.insertBefore($li, $elem.firstChild);
     // Title
     $li.innerHTML = title.replace(
       /`(.+?)`/g,

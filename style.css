@@ -44,7 +44,7 @@ body {
   margin: 1.5em 3em;
 }
 
-h1, h2 {
+h1, h2, h3 {
   line-height: 1.2;
   margin: 0;
 }
@@ -55,6 +55,10 @@ h1 {
 
 h2 {
   font-size: 4.2rem;
+}
+
+h3 {
+  font-size: 2.5rem;
 }
 
 a {

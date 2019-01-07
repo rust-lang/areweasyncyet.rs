@@ -62,6 +62,14 @@ const ASYNC_EXTENSIONS = [
   },
 ];
 
+const ASYNC_ECOSYSTEM = [
+  {
+    title: 'tokio',
+    repo: 'tokio-rs/tokio',
+    tracking: '804',
+  }
+];
+
 // The following code is modified from forge.rust-lang.org
 const epochDate = new Date('2015-12-11');
 const epochRelease = 5;
@@ -73,10 +81,11 @@ const betaMinorVersion = releases + epochRelease + 1;
 
 fillList(ASYNC_BLOCKERS, 'async-blockers');
 fillList(ASYNC_EXTENSIONS, 'async-extensions');
+fillList(ASYNC_ECOSYSTEM, 'async-ecosystem');
 
 function fillList(items, id) {
   const $elem = document.getElementById(id);
-  for (const { title, rfc, tracking, stabilized, unresolved } of items) {
+  for (const { title, rfc, repo, tracking, stabilized, unresolved } of items) {
     const $li = $c('li');
     $elem.insertBefore($li, $elem.firstChild);
     // Title
@@ -131,17 +140,26 @@ function fillList(items, id) {
     if (rfc) {
       $li.appendChild(rfcLink(rfc));
     }
-    // Tracking issue link
     if (tracking) {
+      if (!repo) {
+        $li.appendChild($c('a', {
+          className: 'tracking',
+          href: `https://github.com/rust-lang/rust/issues/${tracking}`,
+          textContent: `#${tracking}`,
+          title: 'Tracking issue',
+        }));
+      } else {
+        $li.appendChild($c('a', {
+          className: 'tracking',
+          href: `https://github.com/${repo}/issues/${tracking}`,
+          textContent: `${repo} #${tracking}`,
+          title: 'Tracking issue',
+        }));
+      }
+      // Tracking issue link
       if (rfc) {
         appendText(' / ');
       }
-      $li.appendChild($c('a', {
-        className: 'tracking',
-        href: `https://github.com/rust-lang/rust/issues/${tracking}`,
-        textContent: `#${tracking}`,
-        title: 'Tracking issue',
-      }));
     }
   }
 }

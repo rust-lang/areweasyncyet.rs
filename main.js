@@ -41,6 +41,10 @@ const ASYNC_BLOCKERS = [
     },
   },
   {
+    title: 'async fn should support multiple lifetimes',
+    tracking: '56238',
+  },
+  {
     title: '`std::task` and `std::future`',
     rfc: '2592',
   },

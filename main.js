@@ -49,6 +49,10 @@ const ASYNC_BLOCKERS = [
     rfc: '2394-async_await',
     tracking: '50547',
   },
+  {
+    title: 'async fn should support multiple lifetimes',
+    tracking: '56238',
+  },
 ];
 
 const ASYNC_EXTENSIONS = [

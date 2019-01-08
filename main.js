@@ -143,6 +143,9 @@ function fillList(items, id) {
     // RFC link
     if (rfc) {
       $li.appendChild(rfcLink(rfc));
+      if (tracking) {
+        appendText(' / ');
+      }
     }
     if (tracking) {
       if (!repo) {
@@ -159,10 +162,6 @@ function fillList(items, id) {
           textContent: `${repo} #${tracking}`,
           title: 'Tracking issue',
         }));
-      }
-      // Tracking issue link
-      if (rfc) {
-        appendText(' / ');
       }
     }
   }

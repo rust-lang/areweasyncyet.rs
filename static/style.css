@@ -103,6 +103,11 @@ code {
   font-weight: bold;
 }
 
+footer {
+  font-size: 60%;
+  color: #ccc;
+}
+
 .github-ribbon {
   position: absolute;
   top: 0;

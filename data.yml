@@ -1,0 +1,52 @@
+async_blockers:
+
+  - title: "`impl Trait` in return position"
+    rfc: 1522-conservative-impl-trait
+    tracking: 34511
+    stabilized:
+      version: "1.26"
+      pr: 49255
+
+  - title: "`async` as a keyword in 2018 edition"
+    stabilized:
+      version: "1.28"
+      pr: 50307
+
+  - title: "2018 edition"
+    stabilized:
+      version: "1.31"
+      pr: 54057
+
+  - title: "`Pin` as a method receiver"
+    rfc: 2362
+    tracking: 55786
+    stabilized:
+      version: "1.33"
+      pr: 56805
+
+  - title: "Pin APIs"
+    rfc: "2349-pin"
+    tracking: 49150
+    stabilized:
+      version: "1.33"
+      pr: 56939
+
+  - title: "`std::task` and `std::future`"
+    rfc: 2592
+
+  - title: "`async`/`await` syntax"
+    rfc: "2394-async_await"
+    tracking: 50547
+
+async_extensions:
+
+  - title: "better syntax for `await` expression"
+    unresolved: "2394-async_await#final-syntax-for-the-await-expression"
+
+  - title: "async iterators or stream"
+    unresolved: "2394-async_await#generators-and-streams"
+
+async_ecosystem:
+  - title: "tokio"
+    repo: "tokio-rs/tokio"
+    tracking: 804

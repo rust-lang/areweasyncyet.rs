@@ -1,23 +1,32 @@
+{% import "macros.html" as macros -%}
 <!DOCTYPE html>
 <html lang="en">
 <meta charset="UTF-8">
 <title>Are we async yet?</title>
 <link rel="stylesheet" href="style.css">
-<script src="main.js" defer></script>
 <body>
 <h1>Are we <code>async</code> yet?</h1>
 <p>For <code>async</code> syntax, not yet, but progress is being made!</p>
-<p>Although the more ergonomic syntax is not ready yet,
+<p>
+  Although the more ergonomic syntax is not ready yet,
   asynchronous I/O is already possible in Rust with
   ecosystem around <a href="https://crates.io/crates/futures">futures</a>,
   <a href="https://crates.io/crates/mio">mio</a>, and
-  <a href="https://crates.io/crates/tokio">tokio</a>.</p>
+  <a href="https://crates.io/crates/tokio">tokio</a>.
+</p>
 <h2><code>async</code> syntax and blockers</h2>
-<ul id="async-blockers"></ul>
+<ul id="async-blockers">
+  {{ macros::render_items(items=items.async_blockers) }}
+</ul>
 <h3>Future extensions</h3>
-<ul id="async-extensions"></ul>
+<ul id="async-extensions">
+  {{ macros::render_items(items=items.async_extensions) }}
+</ul>
 <h2><code>async</code> ecosystem</h2>
-<ul id="async-ecosystem"></ul>
+<ul id="async-ecosystem">
+  {{ macros::render_items(items=items.async_ecosystem) }}
+</ul>
+<footer>Generated at {{ time }}</footer>
 <a class="github-ribbon" href="https://github.com/upsuper/areweasyncyet.rs">Fork me on GitHub</a>
 </body>
 </html>

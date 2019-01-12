@@ -1,9 +1,9 @@
 use chrono::{Duration, NaiveDate};
-use combine::Parser;
 use combine::error::StringStreamError;
 use combine::parser::char::{char, digit};
 use combine::range::recognize;
 use combine::skip_many1;
+use combine::Parser;
 use std::str::FromStr;
 
 #[derive(Clone, Copy, Debug, Eq, Ord, PartialEq, PartialOrd)]
@@ -30,9 +30,7 @@ impl FromStr for RustcVersion {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         (number(), char('.'), number())
-            .map(|(major, _, minor)| {
-                RustcVersion { major, minor }
-            })
+            .map(|(major, _, minor)| RustcVersion { major, minor })
             .parse(s)
             .and_then(|(version, remaining)| {
                 if remaining.is_empty() {

@@ -20,7 +20,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     page_gen::generate(&items)?;
     copy_static_files()?;
-    fs::copy(concat!(env!("CARGO_MANIFEST_DIR"), "/CNAME"), OUT_DIR.join("CNAME"))?;
+    fs::copy(
+        concat!(env!("CARGO_MANIFEST_DIR"), "/CNAME"),
+        OUT_DIR.join("CNAME"),
+    )?;
     Ok(())
 }
 

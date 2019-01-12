@@ -34,7 +34,9 @@ pub fn issue_url(value: Value, params: HashMap<String, Value>) -> tera::Result<V
 
 fn get_issue_number(value: Value) -> tera::Result<u64> {
     let number = match value {
-        Value::Number(n) => n.as_u64().ok_or_else(|| format!("unsupport number: {:?}", n))?,
+        Value::Number(n) => n
+            .as_u64()
+            .ok_or_else(|| format!("unsupport number: {:?}", n))?,
         _ => Err(format!("unsupported value for issue number: {:?}", value))?,
     };
     Ok(number)

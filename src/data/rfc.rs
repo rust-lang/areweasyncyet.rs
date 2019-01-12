@@ -1,6 +1,6 @@
 use super::IssueId;
-use serde::{Deserialize, Deserializer, Serialize};
 use serde::de::{self, Visitor};
+use serde::{Deserialize, Deserializer, Serialize};
 use std::fmt;
 
 #[derive(Debug, Serialize)]
@@ -29,20 +29,29 @@ impl<'de> Deserialize<'de> for Rfc {
             {
                 let id = value as IssueId;
                 let url = format!("https://github.com/rust-lang/rfcs/pull/{}", value);
-                Ok(Rfc { id, url, merged: false })
+                Ok(Rfc {
+                    id,
+                    url,
+                    merged: false,
+                })
             }
 
             fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
             where
                 E: de::Error,
             {
-                let id: IssueId = value.find('-')
+                let id: IssueId = value
+                    .find('-')
                     .and_then(|dash| value[..dash].parse().ok())
                     .ok_or_else(|| E::custom(format!("invalid page name: {}", value)))?;
                 let hash = value.find('#').unwrap_or(value.len());
                 let (page, frag) = value.split_at(hash);
                 let url = format!("https://rust-lang.github.io/rfcs/{}.html{}", page, frag);
-                Ok(Rfc { id, url, merged: true })
+                Ok(Rfc {
+                    id,
+                    url,
+                    merged: true,
+                })
             }
         }
         deserializer.deserialize_u64(RfcVisitor)

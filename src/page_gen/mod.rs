@@ -10,9 +10,7 @@ mod testers;
 
 const INDEX_FILE: &str = "index.html";
 
-pub fn generate(
-    items: &HashMap<String, Vec<Item>>,
-) -> Result<(), Box<dyn Error>> {
+pub fn generate(items: &HashMap<String, Vec<Item>>) -> Result<(), Box<dyn Error>> {
     let mut tera = Tera::new("templates/**/*")?;
     tera.autoescape_on(vec![]);
     tera.register_filter("codify", filters::codify);
@@ -27,4 +25,3 @@ pub fn generate(
     fs::write(super::OUT_DIR.join(INDEX_FILE), html)?;
     Ok(())
 }
-

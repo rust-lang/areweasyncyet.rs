@@ -32,5 +32,7 @@ fn parse_version(value: Option<Value>) -> tera::Result<RustcVersion> {
         Some(Value::String(s)) => s,
         _ => Err(format!("unknown type for version: {:?}", value))?,
     };
-    Ok(version.parse().map_err(|_| format!("failed to parse version: {}", version))?)
+    Ok(version
+        .parse()
+        .map_err(|_| format!("failed to parse version: {}", version))?)
 }

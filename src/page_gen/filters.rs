@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use tera::{self, Value};
 
 lazy_static! {
-    static ref RE_CODIFY: Regex = Regex::new("`(.+?)`").unwrap();
+    static ref RE_CODIFY: Regex = Regex::new(r"\&#96;(.+?)\&#96;").unwrap();
 }
 
 pub fn codify(value: Value, _: HashMap<String, Value>) -> tera::Result<Value> {

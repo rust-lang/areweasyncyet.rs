@@ -1,0 +1,15 @@
+query Query($owner: String!, $name: String!, $number: Int!) {
+  repository(owner: $owner, name: $name) {
+    issueOrPullRequest(number: $number) {
+      __typename
+      ... on Issue {
+        title
+        issueState: state
+      }
+      ... on PullRequest {
+        title
+        prState: state
+      }
+    }
+  }
+}

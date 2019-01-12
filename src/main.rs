@@ -1,4 +1,5 @@
 use lazy_static::lazy_static;
+use std::env;
 use std::error::Error;
 use std::fs;
 use std::io;
@@ -6,13 +7,21 @@ use std::path::Path;
 
 mod data;
 mod page_gen;
+mod query;
 
 lazy_static! {
     static ref OUT_DIR: &'static Path = Path::new("out");
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let items = data::read_items()?;
+    let _ = dotenv::dotenv();
+    env_logger::init();
+    let token = env::var("GITHUB_TOKEN")?;
+
+    let client = reqwest::Client::new();
+    let items = data::generate_data(&client, &token)?;
+
+    // Generate page
     if OUT_DIR.is_dir() {
         clear_dir(&*OUT_DIR)?;
     } else {

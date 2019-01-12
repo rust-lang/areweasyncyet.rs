@@ -1,32 +1,62 @@
-use self::rfc::Rfc;
-use serde::{Deserialize, Serialize};
+use self::internal::Converter;
+use reqwest::Client;
+use serde::Serialize;
 use std::collections::HashMap;
 use std::error::Error;
 use std::fs::File;
 
-pub mod rfc;
+mod internal;
 pub mod rustc_version;
 
 pub type IssueId = u32;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Serialize)]
 pub struct Item {
     pub title: String,
     pub rfc: Option<Rfc>,
     pub repo: Option<String>,
-    pub tracking: Option<IssueId>,
+    pub tracking: Option<Issue>,
+    pub issue_label: Option<String>,
+    pub issues: Option<Vec<Issue>>,
     pub stabilized: Option<Stabilization>,
     pub unresolved: Option<Rfc>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-pub struct Stabilization {
-    pub version: String,
-    pub pr: IssueId,
+#[derive(Debug, Serialize)]
+pub struct Rfc {
+    issue: Issue,
+    url: String,
+    merged: bool,
 }
 
-pub fn read_items() -> Result<HashMap<String, Vec<Item>>, Box<dyn Error>> {
+#[derive(Debug, Serialize)]
+pub struct Stabilization {
+    pub version: String,
+    pub pr: Issue,
+}
+
+#[derive(Clone, Debug, Serialize)]
+pub struct Issue {
+    pub number: u32,
+    pub title: String,
+    pub open: bool,
+}
+
+pub fn generate_data(
+    client: &Client,
+    token: &str,
+) -> Result<HashMap<String, Vec<Item>>, Box<dyn Error>> {
     let path = concat!(env!("CARGO_MANIFEST_DIR"), "/data.yml");
     let file = File::open(path)?;
-    Ok(serde_yaml::from_reader(file)?)
+    let data: HashMap<_, Vec<internal::Item>> = serde_yaml::from_reader(file)?;
+    let mut converter = Converter::new(client, token);
+    data.into_iter()
+        .map(|(group, items)| {
+            let items = items
+                .into_iter()
+                .map(|item| converter.convert(item))
+                .collect::<Result<Vec<Item>, _>>()?;
+            Ok((group, items))
+        })
+        .collect()
 }

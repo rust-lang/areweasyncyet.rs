@@ -3,7 +3,9 @@
     <li>
       {{ item.title | codify }}
       {%- if item.unresolved %}
-        <a class="unresolved" href="{{ item.unresolved.url }}">unresolved</a>
+        <a class="unresolved"
+          href="{{ item.unresolved.url }}"
+          title="{{ item.unresolved.issue.title }}">unresolved</a>
         {%- continue %}
       {%- endif %}
       {%- if not item.stabilized %}
@@ -11,7 +13,8 @@
       {%- else %}
         {%- set info = item.stabilized %}
         <a class="stabilized"
-          href="{{ info.pr | pr_url }}">stabilized in {{ info.version }}</a>
+          href="{{ info.pr.number | pr_url }}"
+          title="{{ info.pr.title }}">stabilized in {{ info.version }}</a>
         {%- if info.version is in_stable %}
           <span class="stable">[in stable]</span>
         {%- elif info.version is in_beta %}
@@ -22,19 +25,43 @@
       {%- endif %}
       {%- if item.rfc %}
         /
-        <a class="rfc" href="{{ item.rfc.url }}">RFC {{ item.rfc.id }}</a>
+        <a class="rfc"
+          href="{{ item.rfc.url }}"
+          title="{{ item.rfc.issue.title }}">RFC {{ item.rfc.issue.number }}</a>
       {%- endif %}
       {%- if item.tracking %}
         /
         <a
           class="tracking"
-          href="{{ item.tracking | issue_url(repo=item.repo) }}"
-          title="Tracking issue"
+          href="{{ item.tracking.number | issue_url(repo=item.repo) }}"
+          title="{{ item.tracking.title }}"
         >
           {%- if item.repo %}{{ item.repo }}{% endif %}
-          #{{ item.tracking }}
+          #{{ item.tracking.number }}
         </a>
+      {%- endif %}
+      {%- if item.issues %}
+        <details class="issues">
+          <summary>
+            Related issues under <span class="label">{{ item.issue_label }}</span>
+          </summary>
+          <ul>
+            {%- for issue in item.issues | filter(attribute="open", value=true) | reverse %}
+              {{ self::render_issue(issue=issue, repo=item.repo, class="") }}
+            {%- endfor %}
+            {%- for issue in item.issues | filter(attribute="open", value=false) | reverse %}
+              {{ self::render_issue(issue=issue, repo=item.repo, class="closed") }}
+            {%- endfor %}
+          </ul>
+        </details>
       {%- endif %}
     </li>
   {%- endfor %}
+{%- endmacro %}
+{%- macro render_issue(issue, repo, class) %}
+  <li>
+    <a class="{{ class }}"
+        href="{{ issue.number | issue_url(repo=repo) }}"
+        title="{{ issue.title }}">#{{ issue.number }} - {{ issue.title | codify }}</a>
+  </li>
 {%- endmacro %}

@@ -3,6 +3,7 @@ async_blockers:
   - title: "`impl Trait` in return position"
     rfc: 1522-conservative-impl-trait
     tracking: 34511
+    issue_label: A-impl-trait
     stabilized:
       version: "1.26"
       pr: 49255
@@ -37,6 +38,7 @@ async_blockers:
   - title: "`async`/`await` syntax"
     rfc: "2394-async_await"
     tracking: 50547
+    issue_label: A-async-await
 
 async_extensions:
 

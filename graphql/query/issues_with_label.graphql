@@ -1,0 +1,15 @@
+query Query($label: String!, $cursor: String) {
+  repository(owner: "rust-lang", name: "rust") {
+    issues(first: 100, labels: [$label], after: $cursor) {
+      nodes {
+        number
+        title
+        state
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+}

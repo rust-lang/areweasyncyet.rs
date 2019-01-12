@@ -6,11 +6,15 @@ edition = "2018"
 
 [dependencies]
 chrono = "0.4.6"
-#graphql_client = "0.6.0"
-#reqwest = "0.9.6"
+dotenv = "0.13.0"
+env_logger = "0.6.0"
+graphql_client = "0.6.0"
 lazy_static = "1.2.0"
+log = "0.4.6"
+matches = "0.1.8"
 regex = "1.1.0"
+reqwest = "0.9.6"
 serde = { version = "1.0.84", features = ["derive"] }
+serde_derive = "1.0.84"
 serde_yaml = "0.8.8"
 tera = "0.11.20"
-toml = "0.4.10"

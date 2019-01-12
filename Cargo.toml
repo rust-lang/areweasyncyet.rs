@@ -8,7 +8,6 @@ edition = "2018"
 chrono = "0.4.6"
 #graphql_client = "0.6.0"
 #reqwest = "0.9.6"
-combine = "3.6.5"
 lazy_static = "1.2.0"
 regex = "1.1.0"
 serde = { version = "1.0.84", features = ["derive"] }

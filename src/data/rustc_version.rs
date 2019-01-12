@@ -1,9 +1,5 @@
 use chrono::{Duration, NaiveDate};
-use combine::error::StringStreamError;
-use combine::parser::char::{char, digit};
-use combine::range::recognize;
-use combine::skip_many1;
-use combine::Parser;
+use std::num::ParseIntError;
 use std::str::FromStr;
 
 #[derive(Clone, Copy, Debug, Eq, Ord, PartialEq, PartialOrd)]
@@ -25,24 +21,18 @@ impl RustcVersion {
     }
 }
 
-impl FromStr for RustcVersion {
-    type Err = StringStreamError;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        (number(), char('.'), number())
-            .map(|(major, _, minor)| RustcVersion { major, minor })
-            .parse(s)
-            .and_then(|(version, remaining)| {
-                if remaining.is_empty() {
-                    Ok(version)
-                } else {
-                    Err(StringStreamError::UnexpectedParse)
-                }
-            })
-    }
+pub enum ParsingError {
+    NoDot,
+    Int(ParseIntError),
 }
 
-fn number<'a>() -> impl Parser<Input = &'a str, Output = u32> {
-    recognize(skip_many1(digit()))
-        .and_then(|s: &str| s.parse().map_err(|_| StringStreamError::UnexpectedParse))
+impl FromStr for RustcVersion {
+    type Err = ParsingError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let dot = s.find('.').ok_or(ParsingError::NoDot)?;
+        let major = s[..dot].parse().map_err(ParsingError::Int)?;
+        let minor = s[dot + 1..].parse().map_err(ParsingError::Int)?;
+        Ok(RustcVersion { major, minor })
+    }
 }

@@ -1,4 +1,4 @@
-use super::rustc_version::RustcVersion;
+use crate::data::rustc_version::RustcVersion;
 use chrono::Utc;
 use lazy_static::lazy_static;
 use tera::{self, Value};

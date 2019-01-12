@@ -4,19 +4,21 @@ use std::fs;
 use std::io;
 use std::path::Path;
 
-mod index;
+mod data;
+mod page_gen;
 
 lazy_static! {
     static ref OUT_DIR: &'static Path = Path::new("out");
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
+    let items = data::read_items()?;
     if OUT_DIR.is_dir() {
         clear_dir(&*OUT_DIR)?;
     } else {
         fs::create_dir_all(&*OUT_DIR)?;
     }
-    index::generate()?;
+    page_gen::generate(&items)?;
     copy_static_files()?;
     fs::copy(concat!(env!("CARGO_MANIFEST_DIR"), "/CNAME"), OUT_DIR.join("CNAME"))?;
     Ok(())

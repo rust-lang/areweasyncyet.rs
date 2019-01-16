@@ -11,7 +11,7 @@ mod testers;
 const INDEX_FILE: &str = "index.html";
 
 pub fn generate(items: &HashMap<String, Vec<Item>>) -> Result<(), Box<dyn Error>> {
-    let mut tera = Tera::new("templates/**/*")?;
+    let mut tera = Tera::new("templates/**/*.html")?;
     tera.register_filter("codify", filters::codify);
     tera.register_filter("pr_url", filters::pr_url);
     tera.register_filter("issue_url", filters::issue_url);

@@ -23,13 +23,9 @@ pub fn pr_url(value: Value, _: HashMap<String, Value>) -> tera::Result<Value> {
     Ok(format!("https://github.com/rust-lang/rust/pull/{}", number).into())
 }
 
-pub fn issue_url(value: Value, params: HashMap<String, Value>) -> tera::Result<Value> {
+pub fn issue_url(value: Value, _: HashMap<String, Value>) -> tera::Result<Value> {
     let number = get_issue_number(value)?;
-    let repo = match params.get("repo") {
-        Some(Value::String(s)) => s,
-        _ => "rust-lang/rust",
-    };
-    Ok(format!("https://github.com/{}/issues/{}", repo, number).into())
+    Ok(format!("https://github.com/rust-lang/rust/issues/{}", number).into())
 }
 
 fn get_issue_number(value: Value) -> tera::Result<u64> {

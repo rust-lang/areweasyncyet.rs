@@ -14,7 +14,6 @@ pub type IssueId = u32;
 pub struct Item {
     pub title: String,
     pub rfc: Option<Rfc>,
-    pub repo: Option<String>,
     pub tracking: Option<Issue>,
     pub issue_label: Option<String>,
     pub issues: Option<Vec<Issue>>,

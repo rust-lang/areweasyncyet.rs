@@ -9,7 +9,6 @@ use std::error::Error;
 pub struct Item {
     title: String,
     rfc: Option<String>,
-    repo: Option<String>,
     tracking: Option<IssueId>,
     issue_label: Option<String>,
     stabilized: Option<Stabilization>,
@@ -36,20 +35,15 @@ impl<ReqBuildFunc: Fn() -> RequestBuilder> Converter<ReqBuildFunc> {
     }
 
     pub fn convert(&mut self, item: Item) -> Result<super::Item, Box<dyn Error>> {
-        let repo = item.repo;
         let issues = transpose(
             item.issue_label
                 .as_ref()
                 .map(|label| self.fetch_issues(&label)),
         )?;
-        let tracking = transpose(
-            item.tracking
-                .map(|v| self.convert_issue(repo.as_ref().map(|s| s.as_str()), v)),
-        )?;
+        let tracking = transpose(item.tracking.map(|v| self.convert_issue(None, v)))?;
         Ok(super::Item {
             title: item.title,
             rfc: transpose(item.rfc.map(|v| self.convert_rfc(&v)))?,
-            repo,
             tracking,
             issue_label: item.issue_label,
             issues,

@@ -33,12 +33,9 @@
         /
         <a
           class="tracking"
-          href="{{ item.tracking.number | issue_url(repo=item.repo) }}"
+          href="{{ item.tracking.number | issue_url }}"
           title="{{ item.tracking.title }}"
-        >
-          {%- if item.repo %}{{ item.repo }}{% endif %}
-          #{{ item.tracking.number }}
-        </a>
+        >#{{ item.tracking.number }}</a>
       {%- endif %}
       {%- if item.issues %}
         <details class="issues">
@@ -47,10 +44,10 @@
           </summary>
           <ul>
             {%- for issue in item.issues | filter(attribute="open", value=true) | reverse %}
-              {{ self::render_issue(issue=issue, repo=item.repo, class="") }}
+              {{ self::render_issue(issue=issue, class="") }}
             {%- endfor %}
             {%- for issue in item.issues | filter(attribute="open", value=false) | reverse %}
-              {{ self::render_issue(issue=issue, repo=item.repo, class="closed") }}
+              {{ self::render_issue(issue=issue, class="closed") }}
             {%- endfor %}
           </ul>
         </details>
@@ -58,10 +55,10 @@
     </li>
   {%- endfor %}
 {%- endmacro %}
-{%- macro render_issue(issue, repo, class) %}
+{%- macro render_issue(issue, class) %}
   <li>
     <a class="{{ class }}"
-        href="{{ issue.number | issue_url(repo=repo) }}"
+        href="{{ issue.number | issue_url }}"
         title="{{ issue.title }}">#{{ issue.number }} - {{ issue.title | codify }}</a>
   </li>
 {%- endmacro %}

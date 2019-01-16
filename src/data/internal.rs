@@ -54,14 +54,14 @@ impl<ReqBuildFunc: Fn() -> RequestBuilder> Converter<ReqBuildFunc> {
 
     fn convert_rfc(&mut self, rfc: &str) -> Result<super::Rfc, Box<dyn Error>> {
         let dash = rfc.find('-');
-        let number = rfc[..dash.unwrap_or(rfc.len())].parse()?;
+        let number = rfc[..dash.unwrap_or_else(|| rfc.len())].parse()?;
         let (url, merged) = if dash.is_none() {
             (
                 format!("https://github.com/rust-lang/rfcs/pull/{}", rfc),
                 false,
             )
         } else {
-            let hash = rfc.find('#').unwrap_or(rfc.len());
+            let hash = rfc.find('#').unwrap_or_else(|| rfc.len());
             let (page, frag) = rfc.split_at(hash);
             (
                 format!("https://rust-lang.github.io/rfcs/{}.html{}", page, frag),

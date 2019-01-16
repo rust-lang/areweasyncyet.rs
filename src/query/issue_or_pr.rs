@@ -27,7 +27,7 @@ pub fn query(
     let query = Query::build_query(Variables {
         owner: owner.to_string(),
         name: name.to_string(),
-        number: number as i64,
+        number: i64::from(number),
     });
     let resp = build_req()
         .json(&query)

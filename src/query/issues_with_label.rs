@@ -4,7 +4,7 @@ use crate::data::Issue;
 use graphql_client::{GraphQLQuery, Response};
 use log::info;
 use matches::matches;
-use reqwest::Client;
+use reqwest::RequestBuilder;
 use std::error::Error;
 
 #[derive(GraphQLQuery)]
@@ -15,7 +15,10 @@ use std::error::Error;
 )]
 struct Query;
 
-pub fn query(client: &Client, token: &str, label: &str) -> Result<Vec<Issue>, Box<dyn Error>> {
+pub fn query(
+    build_req: impl Fn() -> RequestBuilder,
+    label: &str,
+) -> Result<Vec<Issue>, Box<dyn Error>> {
     info!("fetching issues of label {}...", label);
     let mut result = Vec::new();
     let mut cursor = None;
@@ -24,9 +27,7 @@ pub fn query(client: &Client, token: &str, label: &str) -> Result<Vec<Issue>, Bo
             label: label.to_string(),
             cursor,
         });
-        let resp = client
-            .post("https://api.github.com/graphql")
-            .bearer_auth(token)
+        let resp = build_req()
             .json(&query)
             .send()?
             .json::<Response<ResponseData>>()?;

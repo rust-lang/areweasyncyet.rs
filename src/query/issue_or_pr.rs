@@ -6,7 +6,7 @@ use crate::data::{Issue, IssueId};
 use graphql_client::{GraphQLQuery, Response};
 use log::info;
 use matches::matches;
-use reqwest::Client;
+use reqwest::RequestBuilder;
 use std::error::Error;
 
 #[derive(GraphQLQuery)]
@@ -18,8 +18,7 @@ use std::error::Error;
 struct Query;
 
 pub fn query(
-    client: &Client,
-    token: &str,
+    build_req: impl Fn() -> RequestBuilder,
     owner: &str,
     name: &str,
     number: IssueId,
@@ -30,9 +29,7 @@ pub fn query(
         name: name.to_string(),
         number: number as i64,
     });
-    let resp = client
-        .post("https://api.github.com/graphql")
-        .bearer_auth(token)
+    let resp = build_req()
         .json(&query)
         .send()?
         .json::<Response<ResponseData>>()?;

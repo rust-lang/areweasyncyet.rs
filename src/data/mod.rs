@@ -1,5 +1,5 @@
 use self::internal::Converter;
-use reqwest::Client;
+use reqwest::RequestBuilder;
 use serde::Serialize;
 use std::collections::HashMap;
 use std::error::Error;
@@ -43,13 +43,12 @@ pub struct Issue {
 }
 
 pub fn generate_data(
-    client: &Client,
-    token: &str,
+    build_req: impl Fn() -> RequestBuilder,
 ) -> Result<HashMap<String, Vec<Item>>, Box<dyn Error>> {
     let path = concat!(env!("CARGO_MANIFEST_DIR"), "/data.yml");
     let file = File::open(path)?;
     let data: HashMap<_, Vec<internal::Item>> = serde_yaml::from_reader(file)?;
-    let mut converter = Converter::new(client, token);
+    let mut converter = Converter::new(build_req);
     data.into_iter()
         .map(|(group, items)| {
             let items = items

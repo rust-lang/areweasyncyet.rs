@@ -1,6 +1,6 @@
 use super::IssueId;
 use crate::query::{issue_or_pr, issues_with_label};
-use reqwest::Client;
+use reqwest::RequestBuilder;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::error::Error;
@@ -22,24 +22,26 @@ struct Stabilization {
     pr: IssueId,
 }
 
-pub struct Converter<'a> {
-    client: &'a Client,
-    token: &'a str,
+pub struct Converter<ReqBuildFunc> {
+    build_req: ReqBuildFunc,
     cache: HashMap<IssueId, super::Issue>,
 }
 
-impl<'a> Converter<'a> {
-    pub fn new(client: &'a Client, token: &'a str) -> Self {
+impl<ReqBuildFunc: Fn() -> RequestBuilder> Converter<ReqBuildFunc> {
+    pub fn new(build_req: ReqBuildFunc) -> Self {
         Converter {
-            client,
-            token,
+            build_req,
             cache: HashMap::new(),
         }
     }
 
     pub fn convert(&mut self, item: Item) -> Result<super::Item, Box<dyn Error>> {
         let repo = item.repo;
-        let issues = transpose(item.issue_label.as_ref().map(|label| self.fetch_issues(&label)))?;
+        let issues = transpose(
+            item.issue_label
+                .as_ref()
+                .map(|label| self.fetch_issues(&label)),
+        )?;
         let tracking = transpose(
             item.tracking
                 .map(|v| self.convert_issue(repo.as_ref().map(|s| s.as_str()), v)),
@@ -100,13 +102,13 @@ impl<'a> Converter<'a> {
         } else {
             ("rust-lang", "rust")
         };
-        let issue = issue_or_pr::query(self.client, self.token, owner, name, id)?;
+        let issue = issue_or_pr::query(&self.build_req, owner, name, id)?;
         self.cache.insert(id, issue.clone());
         Ok(issue)
     }
 
     fn fetch_issues(&mut self, label: &str) -> Result<Vec<super::Issue>, Box<dyn Error>> {
-        let issues = issues_with_label::query(self.client, self.token, label)?;
+        let issues = issues_with_label::query(&self.build_req, label)?;
         for issue in issues.iter() {
             self.cache.insert(issue.number, issue.clone());
         }

@@ -19,7 +19,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     let token = env::var("GITHUB_TOKEN")?;
 
     let client = reqwest::Client::new();
-    let items = data::generate_data(&client, &token)?;
+    let token = token.as_str();
+    let build_req = || {
+        client
+            .post("https://api.github.com/graphql")
+            .bearer_auth(token)
+    };
+    let items = data::generate_data(build_req)?;
 
     // Generate page
     if OUT_DIR.is_dir() {

@@ -1,13 +1,18 @@
+use crate::fetcher::IssueData;
 use lazy_static::lazy_static;
 use std::env;
 use std::error::Error;
-use std::fs;
+use std::fs::{self, File};
 use std::io;
 use std::path::Path;
 
 mod data;
+mod fetcher;
 mod page_gen;
 mod query;
+
+const DATA_FILE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/data.yml");
+const CACHE_FILE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/cache.json");
 
 lazy_static! {
     static ref OUT_DIR: &'static Path = Path::new("out");
@@ -18,6 +23,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     env_logger::init();
     let token = env::var("GITHUB_TOKEN")?;
 
+    let input_data = data::input::read_data(File::open(DATA_FILE)?)?;
+    let (labels, issues) = data::input::get_list_to_fetch(&input_data);
+
+    let mut issue_data = load_cached_issue_data().unwrap_or_default();
     let client = reqwest::Client::new();
     let token = token.as_str();
     let build_req = || {
@@ -25,7 +34,10 @@ fn main() -> Result<(), Box<dyn Error>> {
             .post("https://api.github.com/graphql")
             .bearer_auth(token)
     };
-    let items = data::generate_data(build_req)?;
+    fetcher::fetch_data(build_req, &labels, &issues, &mut issue_data)?;
+    store_issue_data(&issue_data)?;
+
+    let output_data = data::output::generate(input_data, &issue_data);
 
     // Generate page
     if OUT_DIR.is_dir() {
@@ -33,12 +45,23 @@ fn main() -> Result<(), Box<dyn Error>> {
     } else {
         fs::create_dir_all(&*OUT_DIR)?;
     }
-    page_gen::generate(&items)?;
+    page_gen::generate(&output_data)?;
     copy_static_files()?;
     fs::copy(
         concat!(env!("CARGO_MANIFEST_DIR"), "/CNAME"),
         OUT_DIR.join("CNAME"),
     )?;
+    Ok(())
+}
+
+fn load_cached_issue_data() -> Result<IssueData, Box<dyn Error>> {
+    let file = File::open(CACHE_FILE)?;
+    Ok(serde_json::from_reader(file)?)
+}
+
+fn store_issue_data(data: &IssueData) -> Result<(), Box<dyn Error>> {
+    let file = File::create(CACHE_FILE)?;
+    serde_json::to_writer(file, data)?;
     Ok(())
 }
 

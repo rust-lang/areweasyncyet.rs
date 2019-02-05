@@ -1,4 +1,5 @@
 .env
+cache.json
 /out
 /target
 **/*.rs.bk

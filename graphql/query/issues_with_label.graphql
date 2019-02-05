@@ -1,5 +1,5 @@
-query Query($label: String!, $cursor: String) {
-  repository(owner: "rust-lang", name: "rust") {
+query Query($owner: String!, $name: String!, $label: String!, $cursor: String) {
+  repository(owner: $owner, name: $name) {
     issues(first: 100, labels: [$label], after: $cursor) {
       nodes {
         number

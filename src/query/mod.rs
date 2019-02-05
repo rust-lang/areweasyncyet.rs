@@ -1,8 +1,24 @@
+use serde::{Deserialize, Serialize};
 use std::error::Error;
 use std::fmt;
 
 pub mod issue_or_pr;
 pub mod issues_with_label;
+
+#[derive(Clone, Deserialize, Eq, Hash, PartialEq, Serialize)]
+pub struct Repo {
+    pub owner: String,
+    pub name: String,
+}
+
+impl Repo {
+    pub fn new(owner: &str, name: &str) -> Self {
+        Self {
+            owner: owner.to_string(),
+            name: name.to_string(),
+        }
+    }
+}
 
 #[derive(Debug)]
 struct QueryError {

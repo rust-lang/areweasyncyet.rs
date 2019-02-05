@@ -1,5 +1,5 @@
 use self::query::{IssueState, ResponseData, Variables};
-use super::QueryError;
+use super::{QueryError, Repo};
 use crate::data::Issue;
 use graphql_client::{GraphQLQuery, Response};
 use log::info;
@@ -17,6 +17,7 @@ struct Query;
 
 pub fn query(
     build_req: impl Fn() -> RequestBuilder,
+    repo: &Repo,
     label: &str,
 ) -> Result<Vec<Issue>, Box<dyn Error>> {
     info!("fetching issues of label {}...", label);
@@ -24,6 +25,8 @@ pub fn query(
     let mut cursor = None;
     loop {
         let query = Query::build_query(Variables {
+            owner: repo.owner.clone(),
+            name: repo.name.clone(),
             label: label.to_string(),
             cursor,
         });

@@ -1,7 +1,7 @@
 use self::query::QueryRepositoryIssueOrPullRequest as IssueOrPr;
 use self::query::{IssueState, PullRequestState};
 use self::query::{ResponseData, Variables};
-use super::QueryError;
+use super::{QueryError, Repo};
 use crate::data::{Issue, IssueId};
 use graphql_client::{GraphQLQuery, Response};
 use log::info;
@@ -19,14 +19,13 @@ struct Query;
 
 pub fn query(
     build_req: impl Fn() -> RequestBuilder,
-    owner: &str,
-    name: &str,
+    repo: &Repo,
     number: IssueId,
 ) -> Result<Issue, Box<dyn Error>> {
-    info!("fetching issue {}/{}#{}...", owner, name, number);
+    info!("fetching issue {}/{}#{}...", repo.owner, repo.name, number);
     let query = Query::build_query(Variables {
-        owner: owner.to_string(),
-        name: name.to_string(),
+        owner: repo.owner.clone(),
+        name: repo.name.clone(),
         number: i64::from(number),
     });
     let resp = build_req()

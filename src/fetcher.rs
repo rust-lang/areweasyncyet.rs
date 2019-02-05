@@ -1,5 +1,5 @@
 use crate::data::{Issue, IssueId};
-use crate::query::{Repo, issues_with_label, issue_or_pr};
+use crate::query::{issue_or_pr, issues_with_label, Repo};
 use reqwest::RequestBuilder;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -30,11 +30,14 @@ pub fn fetch_data(
             continue;
         }
         let issues = issues_with_label::query(&build_req, repo, label)?;
-        let issues = issues.iter().map(|issue| {
-            let id = issue.number;
-            data.issues.insert((repo.clone(), id), issue.clone());
-            id
-        }).collect();
+        let issues = issues
+            .iter()
+            .map(|issue| {
+                let id = issue.number;
+                data.issues.insert((repo.clone(), id), issue.clone());
+                id
+            })
+            .collect();
         data.labels.insert(key, issues);
         updated = true;
     }
@@ -52,7 +55,7 @@ pub fn fetch_data(
 
 mod hashmap_serialization {
     use serde::de::{Deserialize, Deserializer, SeqAccess, Visitor};
-    use serde::ser::{Serialize, Serializer, SerializeSeq};
+    use serde::ser::{Serialize, SerializeSeq, Serializer};
     use std::cmp::Eq;
     use std::collections::HashMap;
     use std::fmt;
@@ -96,7 +99,7 @@ mod hashmap_serialization {
 
         fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
         where
-            A: SeqAccess<'de>, 
+            A: SeqAccess<'de>,
         {
             let mut map = HashMap::with_capacity(seq.size_hint().unwrap_or(0));
             while let Some((key, value)) = seq.next_element()? {

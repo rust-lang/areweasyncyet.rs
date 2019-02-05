@@ -1,5 +1,5 @@
-use super::{IssueId, Issue, RFC_REPO, RUSTC_REPO};
 use super::input::InputData;
+use super::{Issue, IssueId, RFC_REPO, RUSTC_REPO};
 use crate::fetcher::IssueData;
 use crate::query::Repo;
 use serde::Serialize;
@@ -42,36 +42,44 @@ struct Builder<'a> {
 
 impl Builder<'_> {
     fn build(&self, input: InputData) -> OutputData {
-        input.into_iter().map(|(key, items)| {
-            let items = items.into_iter().map(|item| {
-                Item {
-                    title: item.title,
-                    rfc: self.convert_rfc(item.rfc),
-                    tracking: self.get_optional_issue(&*RUSTC_REPO, item.tracking),
-                    issues: item.issue_label.as_ref().map(|label| {
-                        self.issue_data
-                            // TODO Don't clone?
-                            .labels[&(RUSTC_REPO.clone(), label.clone())]
-                            .iter()
-                            .map(|id| self.get_issue(&*RUSTC_REPO, *id))
-                            .collect()
-                    }),
-                    issue_label: item.issue_label,
-                    stabilized: item.stabilized.map(|stabilized| Stabilization {
-                        version: stabilized.version,
-                        pr: self.get_issue(&*RUSTC_REPO, stabilized.pr),
-                    }),
-                    unresolved: self.convert_rfc(item.unresolved),
-                }
-            }).collect();
-            (key, items)
-        }).collect()
+        input
+            .into_iter()
+            .map(|(key, items)| {
+                let items = items
+                    .into_iter()
+                    .map(|item| {
+                        Item {
+                            title: item.title,
+                            rfc: self.convert_rfc(item.rfc),
+                            tracking: self.get_optional_issue(&*RUSTC_REPO, item.tracking),
+                            issues: item.issue_label.as_ref().map(|label| {
+                                self.issue_data
+                                    // TODO Don't clone?
+                                    .labels[&(RUSTC_REPO.clone(), label.clone())]
+                                    .iter()
+                                    .map(|id| self.get_issue(&*RUSTC_REPO, *id))
+                                    .collect()
+                            }),
+                            issue_label: item.issue_label,
+                            stabilized: item.stabilized.map(|stabilized| Stabilization {
+                                version: stabilized.version,
+                                pr: self.get_issue(&*RUSTC_REPO, stabilized.pr),
+                            }),
+                            unresolved: self.convert_rfc(item.unresolved),
+                        }
+                    })
+                    .collect();
+                (key, items)
+            })
+            .collect()
     }
 
     fn convert_rfc(&self, rfc: Option<String>) -> Option<Rfc> {
         let rfc = rfc?;
         let dash = rfc.find('-');
-        let number = rfc[..dash.unwrap_or_else(|| rfc.len())].parse().expect("unexpected rfc number");
+        let number = rfc[..dash.unwrap_or_else(|| rfc.len())]
+            .parse()
+            .expect("unexpected rfc number");
         let (url, merged) = if dash.is_none() {
             (
                 format!("https://github.com/rust-lang/rfcs/pull/{}", rfc),

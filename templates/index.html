@@ -26,9 +26,16 @@
 <ul id="async-ecosystem">
   <li>
     <a href="https://crates.io/crates/tokio">tokio</a> -
-    experimental <code>async</code>/<code>await</code> support is provided with
+    An event-driven, non-blocking I/O platform for writing asynchronous applications.
+    It has experimental <code>async</code>/<code>await</code> support provided behind
     the <code>async-await-preview</code> feature flag.
     / <a href="https://github.com/tokio-rs/tokio/issues/804">#804</a>
+  </li>
+  <li>
+    <a href="https://crates.io/crates/romio">romio</a> -
+    A fork of tokio compatible with the new futures API
+    as well as the <code>async</code>/<code>await</code> syntax
+    to enable people to experiment with the new syntax.
   </li>
 </ul>
 <footer>Generated at {{ time }}</footer>

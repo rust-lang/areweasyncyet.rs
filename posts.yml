@@ -1,0 +1,79 @@
+- title: "Zero-cost futures in Rust"
+  date: 2016-08-11
+  url: https://aturon.github.io/blog/2016/08/11/futures/
+
+- title: "Async/Await I: Self-Referential Structs"
+  date: 2018-01-25
+  url: https://boats.gitlab.io/blog/post/2018-01-25-async-i-self-referential-structs/
+
+- title: "Async/Await II: Narrowing the Scope of the Problem"
+  date: 2018-01-31
+  url: https://boats.gitlab.io/blog/post/2018-01-30-async-ii-narrowing-the-scope/
+
+- title: "Async/Await III: Moving Forward with Something Shippable"
+  date: 2018-02-04
+  url: https://boats.gitlab.io/blog/post/2018-01-30-async-iii-moving-forward/
+
+- title: "Async/Await IV: An Even Better Proposal"
+  date: 2018-02-07
+  url: https://boats.gitlab.io/blog/post/2018-02-07-async-iv-an-even-better-proposal/
+
+- title: "Async/Await V: Getting back to the futures"
+  date: 2018-02-08
+  url: https://boats.gitlab.io/blog/post/2018-02-08-async-v-getting-back-to-the-futures/
+
+- title: "Async/Await VI: 6 weeks of great progress"
+  date: 2018-03-20
+  url: https://boats.gitlab.io/blog/post/2018-03-20-async-vi/
+
+- title: "Async & Await in Rust: a full proposal"
+  date: 2018-04-06
+  url: https://boats.gitlab.io/blog/post/2018-04-06-async-await-final/
+
+- title: "Borrowing in async code"
+  date: 2018-04-24
+  url: https://aturon.github.io/2018/04/24/async-borrowing/
+
+- title: "Async Methods I: generic associated types"
+  date: 2018-05-31
+  url: https://boats.gitlab.io/blog/post/async-methods-i/
+
+- title: "Async Methods II: object safety"
+  date: 2018-06-04
+  url: https://boats.gitlab.io/blog/post/async-methods-ii/
+
+- title: "Another look at the pinning API"
+  date: 2018-08-22
+  url: https://boats.gitlab.io/blog/post/rethinking-pin/
+
+- title: "Experimental async / await support for Tokio"
+  date: 2018-08-27
+  url: https://tokio.rs/blog/2018-08-async-await/
+
+- title: "Making progress in await syntax"
+  date: 2018-11-08
+  url: https://boats.gitlab.io/blog/post/await-syntax/
+
+- title: "The What and How of Futures and async/await in Rust [video]"
+  date: 2018-11-17
+  url: https://www.youtube.com/watch?v=9_3krAQtD2k
+
+- title: "Wherefore art thou Romio?"
+  date: 2018-12-05
+  url: https://boats.gitlab.io/blog/post/romio/
+
+- title: "Inside Rust's Async Transform"
+  date: 2018-12-09
+  url: https://blag.nemo157.com/2018/12/09/inside-rusts-async-transform.html
+
+- title: "Async in Rust, circa 2018"
+  date: 2018-12-13
+  url: https://rust-lang-nursery.github.io/wg-net/2018/12/13/async-update.html
+
+- title: "The Waker API I: what does a waker do?"
+  date: 2019-01-07
+  url: https://boats.gitlab.io/blog/post/wakers-i/
+
+- title: "The Waker API II: waking across threads"
+  date: 2019-01-11
+  url: https://boats.gitlab.io/blog/post/wakers-ii/

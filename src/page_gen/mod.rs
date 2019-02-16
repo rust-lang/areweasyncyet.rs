@@ -1,4 +1,5 @@
 use crate::data::output::Item;
+use crate::posts::Post;
 use chrono::Utc;
 use std::collections::HashMap;
 use std::error::Error;
@@ -10,7 +11,7 @@ mod testers;
 
 const INDEX_FILE: &str = "index.html";
 
-pub fn generate(items: &HashMap<String, Vec<Item>>) -> Result<(), Box<dyn Error>> {
+pub fn generate(items: &HashMap<String, Vec<Item>>, posts: &[Post]) -> Result<(), Box<dyn Error>> {
     let mut tera = Tera::new("templates/**/*.html")?;
     tera.register_filter("codify", filters::codify);
     tera.register_filter("pr_url", filters::pr_url);
@@ -19,6 +20,7 @@ pub fn generate(items: &HashMap<String, Vec<Item>>) -> Result<(), Box<dyn Error>
     tera.register_tester("in_beta", testers::in_beta);
     let mut context = Context::new();
     context.insert("items", &items);
+    context.insert("posts", &posts);
     context.insert("time", &Utc::now().to_rfc2822());
     let html = tera.render(INDEX_FILE, &context)?;
     fs::write(super::OUT_DIR.join(INDEX_FILE), html)?;

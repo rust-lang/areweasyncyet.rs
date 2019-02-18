@@ -2,14 +2,15 @@ use crate::data::{Issue, IssueId};
 use crate::query::{issue_or_pr, issues_with_label, Repo};
 use reqwest::RequestBuilder;
 use serde::{Deserialize, Serialize};
+use serde_with::rust::hashmap_as_tuple_list;
 use std::collections::HashMap;
 use std::error::Error;
 
 #[derive(Default, Deserialize, Serialize)]
 pub struct IssueData {
-    #[serde(with = "hashmap_serialization")]
+    #[serde(with = "hashmap_as_tuple_list")]
     pub labels: HashMap<(Repo, String), Vec<IssueId>>,
-    #[serde(with = "hashmap_serialization")]
+    #[serde(with = "hashmap_as_tuple_list")]
     pub issues: HashMap<(Repo, IssueId), Issue>,
 }
 
@@ -51,61 +52,4 @@ pub fn fetch_data(
         updated = true;
     }
     Ok(updated)
-}
-
-mod hashmap_serialization {
-    use serde::de::{Deserialize, Deserializer, SeqAccess, Visitor};
-    use serde::ser::{Serialize, SerializeSeq, Serializer};
-    use std::cmp::Eq;
-    use std::collections::HashMap;
-    use std::fmt;
-    use std::hash::Hash;
-    use std::marker::PhantomData;
-
-    pub fn serialize<K, V, S>(map: &HashMap<K, V>, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-        K: Eq + Hash + Serialize,
-        V: Serialize,
-    {
-        let mut seq = serializer.serialize_seq(Some(map.len()))?;
-        for item in map.iter() {
-            seq.serialize_element(&item)?;
-        }
-        seq.end()
-    }
-
-    pub fn deserialize<'de, K, V, D>(deserializer: D) -> Result<HashMap<K, V>, D::Error>
-    where
-        D: Deserializer<'de>,
-        K: Eq + Hash + Deserialize<'de>,
-        V: Deserialize<'de>,
-    {
-        deserializer.deserialize_seq(HashMapVisitor(PhantomData))
-    }
-
-    struct HashMapVisitor<K, V>(PhantomData<fn() -> HashMap<K, V>>);
-
-    impl<'de, K, V> Visitor<'de> for HashMapVisitor<K, V>
-    where
-        K: Deserialize<'de> + Eq + Hash,
-        V: Deserialize<'de>,
-    {
-        type Value = HashMap<K, V>;
-
-        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-            formatter.write_str("a list of key-value pairs")
-        }
-
-        fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
-        where
-            A: SeqAccess<'de>,
-        {
-            let mut map = HashMap::with_capacity(seq.size_hint().unwrap_or(0));
-            while let Some((key, value)) = seq.next_element()? {
-                map.insert(key, value);
-            }
-            Ok(map)
-        }
-    }
 }

@@ -77,3 +77,7 @@
 - title: "The Waker API II: waking across threads"
   date: 2019-01-11
   url: https://boats.gitlab.io/blog/post/wakers-ii/
+
+- title: "Async-await status report"
+  date: 2019-03-01
+  url: http://smallcultfollowing.com/babysteps/blog/2019/03/01/async-await-status-report/

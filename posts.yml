@@ -68,7 +68,7 @@
 
 - title: "Async in Rust, circa 2018"
   date: 2018-12-13
-  url: https://rust-lang-nursery.github.io/wg-net/2018/12/13/async-update.html
+  url: https://rustasync.github.io/team/2018/12/13/async-update.html
 
 - title: "The Waker API I: what does a waker do?"
   date: 2019-01-07

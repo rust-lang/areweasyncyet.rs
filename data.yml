@@ -35,6 +35,9 @@ async_blockers:
   - title: "`std::task` and `std::future`"
     rfc: "2592-futures"
     tracking: 59113
+    stabilized:
+      version: "1.36"
+      pr: 59739
 
   - title: "`async`/`await` syntax"
     rfc: "2394-async_await"

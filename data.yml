@@ -46,8 +46,5 @@ async_blockers:
 
 async_extensions:
 
-  - title: "better syntax for `await` expression"
-    unresolved: "2394-async_await#final-syntax-for-the-await-expression"
-
   - title: "async iterators or stream"
     unresolved: "2394-async_await#generators-and-streams"

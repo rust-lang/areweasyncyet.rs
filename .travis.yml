@@ -1,5 +1,8 @@
 language: rust
 cache: cargo
+env:
+  - RUST_LOG=areweasyncyet=debug
+
 script:
   - cargo run --verbose
   - tar cvf out.tar.xz out

@@ -2,11 +2,18 @@ language: rust
 cache: cargo
 script:
   - cargo run --verbose
+  - tar cvf out.tar.xz out
 
 deploy:
-  provider: pages
-  skip-cleanup: true
-  github-token: $GITHUB_TOKEN
-  local-dir: out
-  on:
-    branch: master
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    local_dir: out
+    on:
+      branch: master
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    skip_cleanup: true
+    file: out.tar.xz
+    on:
+      tags: true

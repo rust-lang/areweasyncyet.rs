@@ -1,11 +1,12 @@
 use super::{IssueId, RFC_REPO, RUSTC_REPO};
 use crate::query::Repo;
 use serde::Deserialize;
-use serde_yaml::Result;
 use std::collections::HashMap;
-use std::io::Read;
+use std::error::Error;
+use std::fs::File;
+use std::path::Path;
 
-pub type InputData = HashMap<String, Vec<Item>>;
+pub struct InputData(pub HashMap<String, Vec<Item>>);
 
 #[derive(Debug, Deserialize)]
 pub struct Item {
@@ -23,31 +24,35 @@ pub struct Stabilization {
     pub pr: IssueId,
 }
 
-pub fn read_data(reader: impl Read) -> Result<InputData> {
-    serde_yaml::from_reader(reader)
-}
-
-pub fn get_list_to_fetch(data: &InputData) -> (Vec<(Repo, &str)>, Vec<(Repo, IssueId)>) {
-    let mut labels = Vec::new();
-    let mut issues = Vec::new();
-    for item in data.values().flatten() {
-        if let Some(rfc) = &item.rfc {
-            issues.push((RFC_REPO.clone(), parse_rfc_for_id(&rfc)));
-        }
-        if let Some(tracking) = &item.tracking {
-            issues.push((RUSTC_REPO.clone(), *tracking));
-        }
-        if let Some(label) = &item.issue_label {
-            labels.push((RUSTC_REPO.clone(), label.as_str()));
-        }
-        if let Some(stabilized) = &item.stabilized {
-            issues.push((RUSTC_REPO.clone(), stabilized.pr));
-        }
-        if let Some(unresolved) = &item.unresolved {
-            issues.push((RFC_REPO.clone(), parse_rfc_for_id(&unresolved)));
-        }
+impl InputData {
+    pub fn from_file(path: impl AsRef<Path>) -> Result<Self, Box<dyn Error>> {
+        let file = File::open(path)?;
+        let data = serde_yaml::from_reader(file)?;
+        Ok(InputData(data))
     }
-    (labels, issues)
+
+    pub fn get_list_to_fetch(&self) -> (Vec<(Repo, &str)>, Vec<(Repo, IssueId)>) {
+        let mut labels = Vec::new();
+        let mut issues = Vec::new();
+        for item in self.0.values().flatten() {
+            if let Some(rfc) = &item.rfc {
+                issues.push((RFC_REPO.clone(), parse_rfc_for_id(&rfc)));
+            }
+            if let Some(tracking) = &item.tracking {
+                issues.push((RUSTC_REPO.clone(), *tracking));
+            }
+            if let Some(label) = &item.issue_label {
+                labels.push((RUSTC_REPO.clone(), label.as_str()));
+            }
+            if let Some(stabilized) = &item.stabilized {
+                issues.push((RUSTC_REPO.clone(), stabilized.pr));
+            }
+            if let Some(unresolved) = &item.unresolved {
+                issues.push((RFC_REPO.clone(), parse_rfc_for_id(&unresolved)));
+            }
+        }
+        (labels, issues)
+    }
 }
 
 fn parse_rfc_for_id(rfc: &str) -> IssueId {

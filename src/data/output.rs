@@ -5,7 +5,14 @@ use crate::query::Repo;
 use serde::Serialize;
 use std::collections::HashMap;
 
-pub type OutputData = HashMap<String, Vec<Item>>;
+pub struct OutputData(pub HashMap<String, Vec<Item>>);
+
+impl OutputData {
+    pub fn from_input(input: InputData, issue_data: &IssueData) -> Self {
+        let builder = Builder { issue_data };
+        builder.build(input)
+    }
+}
 
 #[derive(Debug, Serialize)]
 pub struct Item {
@@ -31,18 +38,14 @@ pub struct Stabilization {
     pub pr: Issue,
 }
 
-pub fn generate(input: InputData, issue_data: &IssueData) -> OutputData {
-    let builder = Builder { issue_data };
-    builder.build(input)
-}
-
 struct Builder<'a> {
     issue_data: &'a IssueData,
 }
 
 impl Builder<'_> {
     fn build(&self, input: InputData) -> OutputData {
-        input
+        let result = input
+            .0
             .into_iter()
             .map(|(key, items)| {
                 let items = items
@@ -71,7 +74,8 @@ impl Builder<'_> {
                     .collect();
                 (key, items)
             })
-            .collect()
+            .collect();
+        OutputData(result)
     }
 
     fn convert_rfc(&self, rfc: Option<String>) -> Option<Rfc> {

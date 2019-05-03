@@ -1,10 +1,10 @@
-use crate::data::output::Item;
+use crate::data::input::InputData;
+use crate::data::output::OutputData;
 use crate::fetcher::IssueData;
 use lazy_static::lazy_static;
-use std::collections::HashMap;
 use std::env;
 use std::error::Error;
-use std::fs::{self, File};
+use std::fs;
 use std::io;
 use std::path::Path;
 
@@ -36,7 +36,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     } else {
         fs::create_dir_all(&*OUT_DIR)?;
     }
-    page_gen::generate(&data, &posts)?;
+    page_gen::generate(&data.0, &posts)?;
     copy_static_files()?;
     fs::copy(
         concat!(env!("CARGO_MANIFEST_DIR"), "/CNAME"),
@@ -45,32 +45,21 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn load_data(github_token: &str) -> Result<HashMap<String, Vec<Item>>, Box<dyn Error>> {
-    let input_data = data::input::read_data(File::open(DATA_FILE)?)?;
-    let (labels, issues) = data::input::get_list_to_fetch(&input_data);
+fn load_data(github_token: &str) -> Result<OutputData, Box<dyn Error>> {
+    let input_data = InputData::from_file(DATA_FILE)?;
+    let (labels, issues) = input_data.get_list_to_fetch();
 
-    let mut issue_data = load_cached_issue_data().unwrap_or_default();
+    let mut issue_data = IssueData::from_file(CACHE_FILE).unwrap_or_default();
     let client = reqwest::Client::new();
     let build_req = || {
         client
             .post("https://api.github.com/graphql")
             .bearer_auth(github_token)
     };
-    fetcher::fetch_data(build_req, &labels, &issues, &mut issue_data)?;
-    store_issue_data(&issue_data)?;
+    issue_data.fetch_data(build_req, &labels, &issues)?;
+    issue_data.store_to_file(CACHE_FILE)?;
 
-    Ok(data::output::generate(input_data, &issue_data))
-}
-
-fn load_cached_issue_data() -> Result<IssueData, Box<dyn Error>> {
-    let file = File::open(CACHE_FILE)?;
-    Ok(serde_json::from_reader(file)?)
-}
-
-fn store_issue_data(data: &IssueData) -> Result<(), Box<dyn Error>> {
-    let file = File::create(CACHE_FILE)?;
-    serde_json::to_writer(file, data)?;
-    Ok(())
+    Ok(OutputData::from_input(input_data, &issue_data))
 }
 
 fn clear_dir(dir: &Path) -> io::Result<()> {

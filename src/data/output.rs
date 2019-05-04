@@ -54,7 +54,10 @@ impl Builder<'_> {
     }
 
     fn convert_items(&self, items: Vec<InputItem>) -> Vec<Item> {
-        items.into_iter().map(|item| self.convert_item(item)).collect()
+        items
+            .into_iter()
+            .map(|item| self.convert_item(item))
+            .collect()
     }
 
     fn convert_item(&self, item: InputItem) -> Item {
@@ -62,14 +65,18 @@ impl Builder<'_> {
             title: item.title,
             rfc: self.convert_rfc(item.rfc),
             tracking: self.get_optional_issue(&*RUSTC_REPO, item.tracking),
-            issues: item.issue_label.as_ref().map(|label| {
-                self.issue_data
-                    // TODO Don't clone?
-                    .labels[&(RUSTC_REPO.clone(), label.clone())]
-                    .iter()
-                    .map(|id| self.get_issue(&*RUSTC_REPO, *id))
-                    .collect()
-            }).unwrap_or_default(),
+            issues: item
+                .issue_label
+                .as_ref()
+                .map(|label| {
+                    self.issue_data
+                        // TODO Don't clone?
+                        .labels[&(RUSTC_REPO.clone(), label.clone())]
+                        .iter()
+                        .map(|id| self.get_issue(&*RUSTC_REPO, *id))
+                        .collect()
+                })
+                .unwrap_or_default(),
             issue_label: item.issue_label,
             stabilized: item.stabilized.map(|stabilized| Stabilization {
                 version: stabilized.version,

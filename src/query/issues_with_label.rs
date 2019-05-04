@@ -20,7 +20,7 @@ impl GitHubQuery<'_> {
         repo: &Repo,
         label: &str,
     ) -> Result<Vec<Issue>, Box<dyn Error>> {
-        info!("fetching issues of label {}...", label);
+        info!("fetching issues of label {} in {}...", label, repo);
         let mut result = Vec::new();
         let mut cursor = None;
         loop {

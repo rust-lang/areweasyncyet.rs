@@ -18,7 +18,7 @@ struct Query;
 
 impl GitHubQuery<'_> {
     pub fn query_issue_or_pr(&self, repo: &Repo, number: IssueId) -> Result<Issue, Box<dyn Error>> {
-        info!("fetching issue {}/{}#{}...", repo.owner, repo.name, number);
+        info!("fetching issue {}#{}...", repo, number);
         let query = Query::build_query(Variables {
             owner: repo.owner.clone(),
             name: repo.name.clone(),

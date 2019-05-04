@@ -2,7 +2,7 @@ use graphql_client::Response;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
-use std::fmt;
+use std::fmt::{self, Display};
 
 mod issue_or_pr;
 mod issues_with_label;
@@ -19,6 +19,12 @@ impl Repo {
             owner: owner.to_string(),
             name: name.to_string(),
         }
+    }
+}
+
+impl Display for Repo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}/{}", self.owner, self.name)
     }
 }
 

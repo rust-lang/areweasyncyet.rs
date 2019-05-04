@@ -20,7 +20,7 @@ pub struct Item {
     pub rfc: Option<Rfc>,
     pub tracking: Option<Issue>,
     pub issue_label: Option<String>,
-    pub issues: Option<Vec<Issue>>,
+    pub issues: Vec<Issue>,
     pub stabilized: Option<Stabilization>,
     pub unresolved: Option<Rfc>,
 }
@@ -68,7 +68,7 @@ impl Builder<'_> {
                     .iter()
                     .map(|id| self.get_issue(&*RUSTC_REPO, *id))
                     .collect()
-            }),
+            }).unwrap_or_default(),
             issue_label: item.issue_label,
             stabilized: item.stabilized.map(|stabilized| Stabilization {
                 version: stabilized.version,

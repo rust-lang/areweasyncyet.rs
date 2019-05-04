@@ -3,14 +3,15 @@ use super::{Issue, IssueId};
 use crate::{RFC_REPO, RUSTC_REPO};
 use crate::fetcher::IssueData;
 use crate::query::Repo;
+use semver::Version;
 use serde::Serialize;
 use std::collections::HashMap;
 
 pub struct OutputData(pub HashMap<String, Vec<Item>>);
 
 impl OutputData {
-    pub fn from_input(input: InputData, issue_data: &IssueData) -> Self {
-        let builder = Builder { issue_data };
+    pub fn from_input(input: InputData, issue_data: &IssueData, latest_stable: &Version) -> Self {
+        let builder = Builder { issue_data, latest_stable };
         builder.build(input)
     }
 }
@@ -36,12 +37,22 @@ pub struct Rfc {
 
 #[derive(Debug, Serialize)]
 pub struct Stabilization {
+    pub state: VersionState,
     pub version: String,
     pub pr: Issue,
 }
 
+#[derive(Debug, Serialize)]
+#[serde(rename_all="lowercase")]
+pub enum VersionState {
+    Stable,
+    Beta,
+    Nightly,
+}
+
 struct Builder<'a> {
     issue_data: &'a IssueData,
+    latest_stable: &'a Version,
 }
 
 impl Builder<'_> {
@@ -80,12 +91,27 @@ impl Builder<'_> {
                 .unwrap_or_default(),
             issue_label: item.issue_label,
             stabilized: item.stabilized.map(|stabilized| Stabilization {
+                state: self.get_version_state(&stabilized.version),
                 version: stabilized.version,
                 pr: self.get_issue(&*RUSTC_REPO, stabilized.pr),
             }),
             unresolved: self.convert_rfc(item.unresolved),
             deps: self.convert_items(item.deps),
         }
+    }
+
+    fn get_version_state(&self, version: &str) -> VersionState {
+        let version = Version::parse(&format!("{}.0", version))
+            .expect("invalid stabilization version");
+        if self.latest_stable >= &version {
+            return VersionState::Stable;
+        }
+        let mut beta = self.latest_stable.clone();
+        beta.increment_minor();
+        if &beta >= &version {
+            return VersionState::Beta;
+        }
+        return VersionState::Nightly;
     }
 
     fn convert_rfc(&self, rfc: Option<String>) -> Option<Rfc> {

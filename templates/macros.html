@@ -15,9 +15,9 @@
         <a class="stabilized"
           href="{{ info.pr.number | pr_url }}"
           title="{{ info.pr.title }}">stabilized in {{ info.version }}</a>
-        {%- if info.version is in_stable %}
+        {%- if info.state == "stable" %}
           <span class="stable">[in stable]</span>
-        {%- elif info.version is in_beta %}
+        {%- elif info.state == "beta" %}
           <span class="beta">[in beta]</span>
         {%- else %}
           <span class="nightly">[in nightly]</span>

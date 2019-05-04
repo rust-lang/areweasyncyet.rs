@@ -8,6 +8,7 @@ use std::error::Error;
 use std::fs;
 use std::io;
 use std::path::Path;
+use semver::Version;
 
 mod data;
 mod fetcher;
@@ -58,7 +59,9 @@ fn load_data(query: &GitHubQuery) -> Result<OutputData, Box<dyn Error>> {
     issue_data.fetch_data(query, &fetch_list)?;
     issue_data.store_to_file(CACHE_FILE)?;
 
-    Ok(OutputData::from_input(input_data, &issue_data))
+    let latest_tag = query.query_latest_tag(&*RUSTC_REPO)?;
+    let latest_stable = Version::parse(&latest_tag)?;
+    Ok(OutputData::from_input(input_data, &issue_data, &latest_stable))
 }
 
 fn clear_dir(dir: &Path) -> io::Result<()> {

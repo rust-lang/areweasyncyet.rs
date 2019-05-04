@@ -7,7 +7,6 @@ use std::fs;
 use tera::{Context, Tera};
 
 mod filters;
-mod testers;
 
 const INDEX_FILE: &str = "index.html";
 
@@ -16,8 +15,6 @@ pub fn generate(items: &HashMap<String, Vec<Item>>, posts: &[Post]) -> Result<()
     tera.register_filter("codify", filters::codify);
     tera.register_filter("pr_url", filters::pr_url);
     tera.register_filter("issue_url", filters::issue_url);
-    tera.register_tester("in_stable", testers::in_stable);
-    tera.register_tester("in_beta", testers::in_beta);
     let mut context = Context::new();
     context.insert("items", &items);
     context.insert("posts", &posts);

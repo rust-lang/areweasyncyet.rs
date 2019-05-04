@@ -2,7 +2,6 @@ use serde::{Deserialize, Serialize};
 
 pub mod input;
 pub mod output;
-pub mod rustc_version;
 
 pub type IssueId = u32;
 

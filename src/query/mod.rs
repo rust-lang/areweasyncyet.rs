@@ -6,6 +6,7 @@ use std::fmt::{self, Display};
 
 mod issue_or_pr;
 mod issues_with_label;
+mod latest_tag;
 
 #[derive(Clone, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub struct Repo {

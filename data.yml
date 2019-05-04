@@ -48,3 +48,9 @@ async_extensions:
 
   - title: "async iterators or stream"
     unresolved: "2394-async_await#generators-and-streams"
+
+  - title: "`async fn` in trait method"
+    deps:
+      - title: "Named existentials and impl Trait variable declarations"
+        rfc: "2071-impl-trait-existential-types"
+        tracking: 34511

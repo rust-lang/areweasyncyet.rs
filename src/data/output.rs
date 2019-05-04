@@ -1,4 +1,4 @@
-use super::input::InputData;
+use super::input::{InputData, Item as InputItem};
 use super::{Issue, IssueId, RFC_REPO, RUSTC_REPO};
 use crate::fetcher::IssueData;
 use crate::query::Repo;
@@ -47,35 +47,35 @@ impl Builder<'_> {
         let result = input
             .0
             .into_iter()
-            .map(|(key, items)| {
-                let items = items
-                    .into_iter()
-                    .map(|item| {
-                        Item {
-                            title: item.title,
-                            rfc: self.convert_rfc(item.rfc),
-                            tracking: self.get_optional_issue(&*RUSTC_REPO, item.tracking),
-                            issues: item.issue_label.as_ref().map(|label| {
-                                self.issue_data
-                                    // TODO Don't clone?
-                                    .labels[&(RUSTC_REPO.clone(), label.clone())]
-                                    .iter()
-                                    .map(|id| self.get_issue(&*RUSTC_REPO, *id))
-                                    .collect()
-                            }),
-                            issue_label: item.issue_label,
-                            stabilized: item.stabilized.map(|stabilized| Stabilization {
-                                version: stabilized.version,
-                                pr: self.get_issue(&*RUSTC_REPO, stabilized.pr),
-                            }),
-                            unresolved: self.convert_rfc(item.unresolved),
-                        }
-                    })
-                    .collect();
-                (key, items)
-            })
+            .map(|(key, items)| (key, self.convert_items(items)))
             .collect();
         OutputData(result)
+    }
+
+    fn convert_items(&self, items: Vec<InputItem>) -> Vec<Item> {
+        items.into_iter().map(|item| self.convert_item(item)).collect()
+    }
+
+    fn convert_item(&self, item: InputItem) -> Item {
+        Item {
+            title: item.title,
+            rfc: self.convert_rfc(item.rfc),
+            tracking: self.get_optional_issue(&*RUSTC_REPO, item.tracking),
+            issues: item.issue_label.as_ref().map(|label| {
+                self.issue_data
+                    // TODO Don't clone?
+                    .labels[&(RUSTC_REPO.clone(), label.clone())]
+                    .iter()
+                    .map(|id| self.get_issue(&*RUSTC_REPO, *id))
+                    .collect()
+            }),
+            issue_label: item.issue_label,
+            stabilized: item.stabilized.map(|stabilized| Stabilization {
+                version: stabilized.version,
+                pr: self.get_issue(&*RUSTC_REPO, stabilized.pr),
+            }),
+            unresolved: self.convert_rfc(item.unresolved),
+        }
     }
 
     fn convert_rfc(&self, rfc: Option<String>) -> Option<Rfc> {

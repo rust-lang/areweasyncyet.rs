@@ -16,6 +16,8 @@ pub struct Item {
     pub issue_label: Option<String>,
     pub stabilized: Option<Stabilization>,
     pub unresolved: Option<String>,
+    #[serde(default)]
+    pub deps: Vec<Item>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -65,6 +67,7 @@ impl<'a> FetchList<'a> {
             self.issues
                 .push((RFC_REPO.clone(), parse_rfc_for_id(&unresolved)));
         }
+        item.deps.iter().for_each(|dep| self.fill_from_item(dep));
     }
 }
 

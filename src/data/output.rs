@@ -23,6 +23,7 @@ pub struct Item {
     pub issues: Vec<Issue>,
     pub stabilized: Option<Stabilization>,
     pub unresolved: Option<Rfc>,
+    pub deps: Vec<Item>,
 }
 
 #[derive(Debug, Serialize)]
@@ -75,6 +76,7 @@ impl Builder<'_> {
                 pr: self.get_issue(&*RUSTC_REPO, stabilized.pr),
             }),
             unresolved: self.convert_rfc(item.unresolved),
+            deps: self.convert_items(item.deps),
         }
     }
 

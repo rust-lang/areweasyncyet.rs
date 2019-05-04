@@ -52,6 +52,11 @@
           </ul>
         </details>
       {%- endif %}
+      {%- if item.deps %}
+        <ul class="deps">
+          {{ self::render_items(items=item.deps) }}
+        </ul>
+      {%- endif %}
     </li>
   {%- endfor %}
 {%- endmacro %}

@@ -1,3 +1,4 @@
+use crate::data::input::FetchList;
 use crate::data::{Issue, IssueId};
 use crate::query::{issue_or_pr, issues_with_label, Repo};
 use reqwest::RequestBuilder;
@@ -35,11 +36,10 @@ impl IssueData {
     pub fn fetch_data(
         &mut self,
         build_req: impl Fn() -> RequestBuilder,
-        labels: &[(Repo, &str)],
-        issues: &[(Repo, IssueId)],
+        fetch_list: &FetchList,
     ) -> Result<bool, Box<dyn Error>> {
         let mut updated = false;
-        for (repo, label) in labels.iter() {
+        for (repo, label) in fetch_list.labels.iter() {
             let key = (repo.clone(), label.to_string());
             if self.labels.contains_key(&key) {
                 continue;
@@ -56,7 +56,7 @@ impl IssueData {
             self.labels.insert(key, issues);
             updated = true;
         }
-        for (repo, issue_id) in issues.iter() {
+        for (repo, issue_id) in fetch_list.issues.iter() {
             let key = (repo.clone(), *issue_id);
             if self.issues.contains_key(&key) {
                 continue;

@@ -31,27 +31,40 @@ impl InputData {
         Ok(InputData(data))
     }
 
-    pub fn get_list_to_fetch(&self) -> (Vec<(Repo, &str)>, Vec<(Repo, IssueId)>) {
-        let mut labels = Vec::new();
-        let mut issues = Vec::new();
-        for item in self.0.values().flatten() {
-            if let Some(rfc) = &item.rfc {
-                issues.push((RFC_REPO.clone(), parse_rfc_for_id(&rfc)));
-            }
-            if let Some(tracking) = &item.tracking {
-                issues.push((RUSTC_REPO.clone(), *tracking));
-            }
-            if let Some(label) = &item.issue_label {
-                labels.push((RUSTC_REPO.clone(), label.as_str()));
-            }
-            if let Some(stabilized) = &item.stabilized {
-                issues.push((RUSTC_REPO.clone(), stabilized.pr));
-            }
-            if let Some(unresolved) = &item.unresolved {
-                issues.push((RFC_REPO.clone(), parse_rfc_for_id(&unresolved)));
-            }
+    pub fn get_fetch_list(&self) -> FetchList<'_> {
+        let mut fetch_list = FetchList::default();
+        self.0
+            .values()
+            .flatten()
+            .for_each(|item| fetch_list.fill_from_item(item));
+        fetch_list
+    }
+}
+
+#[derive(Default)]
+pub struct FetchList<'a> {
+    pub labels: Vec<(Repo, &'a str)>,
+    pub issues: Vec<(Repo, IssueId)>,
+}
+
+impl<'a> FetchList<'a> {
+    fn fill_from_item(&mut self, item: &'a Item) {
+        if let Some(rfc) = &item.rfc {
+            self.issues.push((RFC_REPO.clone(), parse_rfc_for_id(&rfc)));
         }
-        (labels, issues)
+        if let Some(tracking) = &item.tracking {
+            self.issues.push((RUSTC_REPO.clone(), *tracking));
+        }
+        if let Some(label) = &item.issue_label {
+            self.labels.push((RUSTC_REPO.clone(), label.as_str()));
+        }
+        if let Some(stabilized) = &item.stabilized {
+            self.issues.push((RUSTC_REPO.clone(), stabilized.pr));
+        }
+        if let Some(unresolved) = &item.unresolved {
+            self.issues
+                .push((RFC_REPO.clone(), parse_rfc_for_id(&unresolved)));
+        }
     }
 }
 

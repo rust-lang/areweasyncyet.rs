@@ -47,7 +47,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 fn load_data(github_token: &str) -> Result<OutputData, Box<dyn Error>> {
     let input_data = InputData::from_file(DATA_FILE)?;
-    let (labels, issues) = input_data.get_list_to_fetch();
+    let fetch_list = input_data.get_fetch_list();
 
     let mut issue_data = IssueData::from_file(CACHE_FILE).unwrap_or_default();
     let client = reqwest::Client::new();
@@ -56,7 +56,7 @@ fn load_data(github_token: &str) -> Result<OutputData, Box<dyn Error>> {
             .post("https://api.github.com/graphql")
             .bearer_auth(github_token)
     };
-    issue_data.fetch_data(build_req, &labels, &issues)?;
+    issue_data.fetch_data(build_req, &fetch_list)?;
     issue_data.store_to_file(CACHE_FILE)?;
 
     Ok(OutputData::from_input(input_data, &issue_data))

@@ -1,8 +1,8 @@
 use super::input::{InputData, Item as InputItem};
 use super::{Issue, IssueId};
-use crate::{RFC_REPO, RUSTC_REPO};
 use crate::fetcher::IssueData;
 use crate::query::Repo;
+use crate::{RFC_REPO, RUSTC_REPO};
 use semver::Version;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -11,7 +11,10 @@ pub struct OutputData(pub HashMap<String, Vec<Item>>);
 
 impl OutputData {
     pub fn from_input(input: InputData, issue_data: &IssueData, latest_stable: &Version) -> Self {
-        let builder = Builder { issue_data, latest_stable };
+        let builder = Builder {
+            issue_data,
+            latest_stable,
+        };
         builder.build(input)
     }
 }
@@ -43,7 +46,7 @@ pub struct Stabilization {
 }
 
 #[derive(Debug, Serialize)]
-#[serde(rename_all="lowercase")]
+#[serde(rename_all = "lowercase")]
 pub enum VersionState {
     Stable,
     Beta,
@@ -101,8 +104,8 @@ impl Builder<'_> {
     }
 
     fn get_version_state(&self, version: &str) -> VersionState {
-        let version = Version::parse(&format!("{}.0", version))
-            .expect("invalid stabilization version");
+        let version =
+            Version::parse(&format!("{}.0", version)).expect("invalid stabilization version");
         if self.latest_stable >= &version {
             return VersionState::Stable;
         }

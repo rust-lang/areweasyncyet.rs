@@ -3,12 +3,12 @@ use crate::data::output::OutputData;
 use crate::fetcher::IssueData;
 use crate::query::{GitHubQuery, Repo};
 use lazy_static::lazy_static;
+use semver::Version;
 use std::env;
 use std::error::Error;
 use std::fs;
 use std::io;
 use std::path::Path;
-use semver::Version;
 
 mod data;
 mod fetcher;
@@ -61,7 +61,11 @@ fn load_data(query: &GitHubQuery) -> Result<OutputData, Box<dyn Error>> {
 
     let latest_tag = query.query_latest_tag(&*RUSTC_REPO)?;
     let latest_stable = Version::parse(&latest_tag)?;
-    Ok(OutputData::from_input(input_data, &issue_data, &latest_stable))
+    Ok(OutputData::from_input(
+        input_data,
+        &issue_data,
+        &latest_stable,
+    ))
 }
 
 fn clear_dir(dir: &Path) -> io::Result<()> {

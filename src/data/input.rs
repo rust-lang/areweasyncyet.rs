@@ -1,6 +1,6 @@
 use super::IssueId;
-use crate::{RFC_REPO, RUSTC_REPO};
 use crate::query::Repo;
+use crate::{RFC_REPO, RUSTC_REPO};
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::error::Error;

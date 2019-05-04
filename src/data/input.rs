@@ -1,4 +1,5 @@
-use super::{IssueId, RFC_REPO, RUSTC_REPO};
+use super::IssueId;
+use crate::{RFC_REPO, RUSTC_REPO};
 use crate::query::Repo;
 use serde::Deserialize;
 use std::collections::HashMap;

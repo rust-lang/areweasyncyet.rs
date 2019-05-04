@@ -1,5 +1,6 @@
 use super::input::{InputData, Item as InputItem};
-use super::{Issue, IssueId, RFC_REPO, RUSTC_REPO};
+use super::{Issue, IssueId};
+use crate::{RFC_REPO, RUSTC_REPO};
 use crate::fetcher::IssueData;
 use crate::query::Repo;
 use serde::Serialize;

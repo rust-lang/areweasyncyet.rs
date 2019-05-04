@@ -1,7 +1,7 @@
 use crate::data::input::InputData;
 use crate::data::output::OutputData;
 use crate::fetcher::IssueData;
-use crate::query::GitHubQuery;
+use crate::query::{GitHubQuery, Repo};
 use lazy_static::lazy_static;
 use std::env;
 use std::error::Error;
@@ -21,6 +21,8 @@ const CACHE_FILE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/cache.json");
 
 lazy_static! {
     static ref OUT_DIR: &'static Path = Path::new("out");
+    static ref RFC_REPO: Repo = Repo::new("rust-lang", "rfcs");
+    static ref RUSTC_REPO: Repo = Repo::new("rust-lang", "rust");
 }
 
 fn main() -> Result<(), Box<dyn Error>> {

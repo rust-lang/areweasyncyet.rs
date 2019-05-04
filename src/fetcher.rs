@@ -1,7 +1,6 @@
 use crate::data::input::FetchList;
 use crate::data::{Issue, IssueId};
-use crate::query::{issue_or_pr, issues_with_label, Repo};
-use reqwest::RequestBuilder;
+use crate::query::{GitHubQuery, Repo};
 use serde::{Deserialize, Serialize};
 use serde_with::rust::hashmap_as_tuple_list;
 use std::collections::HashMap;
@@ -35,7 +34,7 @@ impl IssueData {
     /// Returns whether anything is updated when succeeded.
     pub fn fetch_data(
         &mut self,
-        build_req: impl Fn() -> RequestBuilder,
+        query: &GitHubQuery,
         fetch_list: &FetchList,
     ) -> Result<bool, Box<dyn Error>> {
         let mut updated = false;
@@ -44,7 +43,7 @@ impl IssueData {
             if self.labels.contains_key(&key) {
                 continue;
             }
-            let issues = issues_with_label::query(&build_req, repo, label)?;
+            let issues = query.query_issues_with_labels(repo, label)?;
             let issues = issues
                 .iter()
                 .map(|issue| {
@@ -61,7 +60,7 @@ impl IssueData {
             if self.issues.contains_key(&key) {
                 continue;
             }
-            let issue = issue_or_pr::query(&build_req, repo, *issue_id)?;
+            let issue = query.query_issue_or_pr(repo, *issue_id)?;
             self.issues.insert(key, issue);
             updated = true;
         }

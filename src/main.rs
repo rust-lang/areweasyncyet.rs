@@ -1,6 +1,7 @@
 use crate::data::input::InputData;
 use crate::data::output::OutputData;
 use crate::fetcher::IssueData;
+use crate::query::GitHubQuery;
 use lazy_static::lazy_static;
 use std::env;
 use std::error::Error;
@@ -26,8 +27,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     let _ = dotenv::dotenv();
     env_logger::init();
     let token = env::var("GITHUB_TOKEN")?;
+    let client = reqwest::Client::new();
+    let query = GitHubQuery::new(&client, &token);
 
-    let data = load_data(&token)?;
+    let data = load_data(&query)?;
     let posts = posts::load_posts()?;
 
     // Generate page
@@ -45,18 +48,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn load_data(github_token: &str) -> Result<OutputData, Box<dyn Error>> {
+fn load_data(query: &GitHubQuery) -> Result<OutputData, Box<dyn Error>> {
     let input_data = InputData::from_file(DATA_FILE)?;
     let fetch_list = input_data.get_fetch_list();
 
     let mut issue_data = IssueData::from_file(CACHE_FILE).unwrap_or_default();
-    let client = reqwest::Client::new();
-    let build_req = || {
-        client
-            .post("https://api.github.com/graphql")
-            .bearer_auth(github_token)
-    };
-    issue_data.fetch_data(build_req, &fetch_list)?;
+    issue_data.fetch_data(query, &fetch_list)?;
     issue_data.store_to_file(CACHE_FILE)?;
 
     Ok(OutputData::from_input(input_data, &issue_data))

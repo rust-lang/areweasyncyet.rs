@@ -1,10 +1,9 @@
 use self::query::{IssueState, ResponseData, Variables};
-use super::{QueryError, Repo};
+use super::{GitHubQuery, Repo};
 use crate::data::Issue;
-use graphql_client::{GraphQLQuery, Response};
+use graphql_client::GraphQLQuery;
 use log::info;
 use matches::matches;
-use reqwest::RequestBuilder;
 use std::error::Error;
 
 #[derive(GraphQLQuery)]
@@ -15,49 +14,41 @@ use std::error::Error;
 )]
 struct Query;
 
-pub fn query(
-    build_req: impl Fn() -> RequestBuilder,
-    repo: &Repo,
-    label: &str,
-) -> Result<Vec<Issue>, Box<dyn Error>> {
-    info!("fetching issues of label {}...", label);
-    let mut result = Vec::new();
-    let mut cursor = None;
-    loop {
-        let query = Query::build_query(Variables {
-            owner: repo.owner.clone(),
-            name: repo.name.clone(),
-            label: label.to_string(),
-            cursor,
-        });
-        let resp = build_req()
-            .json(&query)
-            .send()?
-            .json::<Response<ResponseData>>()?;
-        if let Some(errors) = resp.errors {
-            Err(QueryError {
-                name: "issues_with_label",
-                errors,
-            })?;
-        }
-        let data = resp.data.unwrap();
-        let repository = data.repository.unwrap();
-        let issues = repository.issues;
-        let nodes = issues.nodes.unwrap();
-        result.extend(nodes.into_iter().map(|issue| {
-            let issue = issue.unwrap();
-            Issue {
-                number: issue.number as u32,
-                title: issue.title,
-                open: matches!(issue.state, IssueState::OPEN),
+impl GitHubQuery<'_> {
+    pub fn query_issues_with_labels(
+        &self,
+        repo: &Repo,
+        label: &str,
+    ) -> Result<Vec<Issue>, Box<dyn Error>> {
+        info!("fetching issues of label {}...", label);
+        let mut result = Vec::new();
+        let mut cursor = None;
+        loop {
+            let query = Query::build_query(Variables {
+                owner: repo.owner.clone(),
+                name: repo.name.clone(),
+                label: label.to_string(),
+                cursor,
+            });
+            let data: ResponseData = self.send_query("issues_with_labels", &query)?;
+            let repository = data.repository.unwrap();
+            let issues = repository.issues;
+            let nodes = issues.nodes.unwrap();
+            result.extend(nodes.into_iter().map(|issue| {
+                let issue = issue.unwrap();
+                Issue {
+                    number: issue.number as u32,
+                    title: issue.title,
+                    open: matches!(issue.state, IssueState::OPEN),
+                }
+            }));
+            let page_info = issues.page_info;
+            if page_info.has_next_page {
+                cursor = page_info.end_cursor;
+            } else {
+                break;
             }
-        }));
-        let page_info = issues.page_info;
-        if page_info.has_next_page {
-            cursor = page_info.end_cursor;
-        } else {
-            break;
         }
+        Ok(result)
     }
-    Ok(result)
 }

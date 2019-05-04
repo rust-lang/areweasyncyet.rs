@@ -1,9 +1,11 @@
+use graphql_client::Response;
+use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
 use std::fmt;
 
-pub mod issue_or_pr;
-pub mod issues_with_label;
+mod issue_or_pr;
+mod issues_with_label;
 
 #[derive(Clone, Deserialize, Eq, Hash, PartialEq, Serialize)]
 pub struct Repo {
@@ -17,6 +19,35 @@ impl Repo {
             owner: owner.to_string(),
             name: name.to_string(),
         }
+    }
+}
+
+pub struct GitHubQuery<'a> {
+    client: &'a Client,
+    token: &'a str,
+}
+
+impl<'a> GitHubQuery<'a> {
+    pub fn new(client: &'a Client, token: &'a str) -> Self {
+        GitHubQuery { client, token }
+    }
+
+    fn send_query<Q, D>(&self, name: &'static str, query: &Q) -> Result<D, Box<dyn Error>>
+    where
+        Q: Serialize,
+        for<'de> Response<D>: Deserialize<'de>,
+    {
+        let resp = self
+            .client
+            .post("https://api.github.com/graphql")
+            .bearer_auth(self.token)
+            .json(query)
+            .send()?
+            .json::<Response<D>>()?;
+        if let Some(errors) = resp.errors {
+            Err(QueryError { name, errors })?;
+        }
+        Ok(resp.data.unwrap())
     }
 }
 

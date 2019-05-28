@@ -93,3 +93,7 @@
 - title: "A final proposal for await syntax"
   date: 2019-05-06
   url: https://boats.gitlab.io/blog/post/await-decision/
+
+- title: "Update on await syntax"
+  date: 2019-05-28
+  url: https://boats.gitlab.io/blog/post/await-decision-ii/

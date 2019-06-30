@@ -46,7 +46,10 @@ async_blockers:
 
 async_extensions:
 
-  - title: "async iterators or stream"
+  - title: "Async closures"
+    rfc: "2394-async_await#async--closures"
+
+  - title: "Async iterators or stream"
     unresolved: "2394-async_await#generators-and-streams"
 
   - title: "`async fn` in trait method"
@@ -54,3 +57,7 @@ async_extensions:
       - title: "Named existentials and impl Trait variable declarations"
         rfc: "2071-impl-trait-existential-types"
         tracking: 34511
+
+      - title: "Generic associated types (GAT)"
+        rfc: "1598-generic_associated_types"
+        tracking: 44265

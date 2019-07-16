@@ -43,7 +43,7 @@ impl IssueData {
             if self.labels.contains_key(&key) {
                 continue;
             }
-            let issues = query.query_issues_with_labels(repo, label)?;
+            let issues = query.query_issues_with_label(repo, label)?;
             let issues = issues
                 .iter()
                 .map(|issue| {

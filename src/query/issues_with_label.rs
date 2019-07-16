@@ -15,7 +15,7 @@ use std::error::Error;
 struct Query;
 
 impl GitHubQuery<'_> {
-    pub fn query_issues_with_labels(
+    pub fn query_issues_with_label(
         &self,
         repo: &Repo,
         label: &str,

@@ -11,3 +11,9 @@ pub struct Issue {
     pub title: String,
     pub open: bool,
 }
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Link {
+    pub text: String,
+    pub url: String,
+}

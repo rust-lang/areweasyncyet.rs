@@ -1,5 +1,5 @@
 use super::input::{InputData, Item as InputItem};
-use super::{Issue, IssueId};
+use super::{Issue, IssueId, Link};
 use crate::fetcher::IssueData;
 use crate::query::Repo;
 use crate::{RFC_REPO, RUSTC_REPO};
@@ -28,6 +28,7 @@ pub struct Item {
     pub issues: Vec<Issue>,
     pub stabilized: Option<Stabilization>,
     pub unresolved: Option<Rfc>,
+    pub link: Option<Link>,
     pub deps: Vec<Item>,
 }
 
@@ -99,6 +100,7 @@ impl Builder<'_> {
                 pr: self.get_issue(&*RUSTC_REPO, stabilized.pr),
             }),
             unresolved: self.convert_rfc(item.unresolved),
+            link: item.link,
             deps: self.convert_items(item.deps),
         }
     }

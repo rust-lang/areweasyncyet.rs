@@ -61,3 +61,8 @@ async_extensions:
       - title: "Generic associated types (GAT)"
         rfc: "1598-generic_associated_types"
         tracking: 44265
+
+      - title: "Workaround is available as an attribute macro:"
+        link:
+          text: "`async-trait`"
+          url: https://github.com/dtolnay/async-trait

@@ -10,6 +10,7 @@
       {%- endif %}
       {%- if item.link %}
         <a href="{{ item.link.url }}">{{ item.link.text | codify }}</a>
+        {%- continue %}
       {%- endif %}
       {%- if not item.stabilized %}
         <span class="not-stabilized">not stabilized yet</span>

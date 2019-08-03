@@ -1,4 +1,4 @@
-use super::IssueId;
+use super::{IssueId, Link};
 use crate::query::Repo;
 use crate::{RFC_REPO, RUSTC_REPO};
 use serde::Deserialize;
@@ -17,6 +17,7 @@ pub struct Item {
     pub issue_label: Option<String>,
     pub stabilized: Option<Stabilization>,
     pub unresolved: Option<String>,
+    pub link: Option<Link>,
     #[serde(default)]
     pub deps: Vec<Item>,
 }

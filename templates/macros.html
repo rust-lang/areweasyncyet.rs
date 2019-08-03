@@ -8,6 +8,9 @@
           title="{{ item.unresolved.issue.title }}">unresolved</a>
         {%- continue %}
       {%- endif %}
+      {%- if item.link %}
+        <a href="{{ item.link.url }}">{{ item.link.text | codify }}</a>
+      {%- endif %}
       {%- if not item.stabilized %}
         <span class="not-stabilized">not stabilized yet</span>
       {%- else %}

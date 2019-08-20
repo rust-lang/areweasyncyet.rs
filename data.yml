@@ -43,6 +43,9 @@ async_blockers:
     rfc: "2394-async_await"
     tracking: 50547
     issue_label: A-async-await
+    stabilized:
+      version: "1.39"
+      pr: 63209
 
 async_extensions:
 

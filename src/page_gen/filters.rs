@@ -10,7 +10,7 @@ lazy_static! {
 pub fn codify(value: Value, _: HashMap<String, Value>) -> tera::Result<Value> {
     let value = match value {
         Value::String(s) => s,
-        _ => Err(format!("unsupported value for codify: {:?}", value))?,
+        _ => return Err(format!("unsupported value for codify: {:?}", value).into()),
     };
     let result = RE_CODIFY.replace_all(&value, |captures: &Captures| {
         format!("<code>{}</code>", captures.get(1).unwrap().as_str())
@@ -33,7 +33,7 @@ fn get_issue_number(value: Value) -> tera::Result<u64> {
         Value::Number(n) => n
             .as_u64()
             .ok_or_else(|| format!("unsupport number: {:?}", n))?,
-        _ => Err(format!("unsupported value for issue number: {:?}", value))?,
+        _ => return Err(format!("unsupported value for issue number: {:?}", value).into()),
     };
     Ok(number)
 }

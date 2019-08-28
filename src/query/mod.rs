@@ -52,7 +52,7 @@ impl<'a> GitHubQuery<'a> {
             .send()?
             .json::<Response<D>>()?;
         if let Some(errors) = resp.errors {
-            Err(QueryError { name, errors })?;
+            return Err(QueryError { name, errors }.into());
         }
         Ok(resp.data.unwrap())
     }

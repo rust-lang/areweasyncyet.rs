@@ -108,15 +108,15 @@ impl Builder<'_> {
     fn get_version_state(&self, version: &str) -> VersionState {
         let version =
             Version::parse(&format!("{}.0", version)).expect("invalid stabilization version");
-        if self.latest_stable >= &version {
+        if *self.latest_stable >= version {
             return VersionState::Stable;
         }
         let mut beta = self.latest_stable.clone();
         beta.increment_minor();
-        if &beta >= &version {
+        if beta >= version {
             return VersionState::Beta;
         }
-        return VersionState::Nightly;
+        VersionState::Nightly
     }
 
     fn convert_rfc(&self, rfc: Option<String>) -> Option<Rfc> {

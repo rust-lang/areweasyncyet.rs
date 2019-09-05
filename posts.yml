@@ -102,7 +102,11 @@
   date: 2019-07-08
   url: http://smallcultfollowing.com/babysteps/blog/2019/07/08/async-await-status-report-2/
 
-- title: "How Rust optimizes async/await: Part 1"
+- title: "How Rust optimizes async/await I"
   date: 2019-08-18
   url: https://tmandry.gitlab.io/blog/posts/optimizing-await-1/
+
+- title: "How Rust optimizes async/await II: Program analysis"
+  date: 2019-09-02
+  url: https://tmandry.gitlab.io/blog/posts/optimizing-await-2/
 

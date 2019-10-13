@@ -10,12 +10,17 @@ mod filters;
 
 const INDEX_FILE: &str = "index.html";
 
-pub fn generate(items: &HashMap<String, Vec<Item>>, posts: &[Post]) -> Result<(), Box<dyn Error>> {
+pub fn generate(
+    is_stable: bool,
+    items: &HashMap<String, Vec<Item>>,
+    posts: &[Post],
+) -> Result<(), Box<dyn Error>> {
     let mut tera = Tera::new("templates/**/*.html")?;
     tera.register_filter("codify", filters::codify);
     tera.register_filter("pr_url", filters::pr_url);
     tera.register_filter("issue_url", filters::issue_url);
     let mut context = Context::new();
+    context.insert("is_stable", &is_stable);
     context.insert("items", &items);
     context.insert("posts", &posts);
     context.insert("time", &Utc::now().to_rfc2822());

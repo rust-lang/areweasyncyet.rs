@@ -61,6 +61,10 @@ h3 {
   font-size: 2.5rem;
 }
 
+strong.extra {
+  font-size: 4rem;
+}
+
 a {
   color: #3873ad;
   text-decoration: none;

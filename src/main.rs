@@ -33,7 +33,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     let client = reqwest::Client::new();
     let query = GitHubQuery::new(&client, &token);
 
-    let data = load_data(&query)?;
+    let stabilized_version = Version::new(1, 39, 0);
+    let latest_stable = load_version(&query)?;
+    let is_stable = latest_stable >= stabilized_version;
+    let data = load_data(&query, &latest_stable)?;
     let posts = posts::load_posts()?;
 
     // Generate page
@@ -42,7 +45,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     } else {
         fs::create_dir_all(&*OUT_DIR)?;
     }
-    page_gen::generate(&data.0, &posts)?;
+    page_gen::generate(is_stable, &data.0, &posts)?;
     copy_static_files()?;
     fs::copy(
         concat!(env!("CARGO_MANIFEST_DIR"), "/CNAME"),
@@ -51,7 +54,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn load_data(query: &GitHubQuery) -> Result<OutputData, Box<dyn Error>> {
+fn load_version(query: &GitHubQuery) -> Result<Version, Box<dyn Error>> {
+    let latest_tag = query.query_latest_tag(&*RUSTC_REPO)?;
+    Ok(Version::parse(&latest_tag)?)
+}
+
+fn load_data(query: &GitHubQuery, latest_stable: &Version) -> Result<OutputData, Box<dyn Error>> {
     let input_data = InputData::from_file(DATA_FILE)?;
     let fetch_list = input_data.get_fetch_list();
 
@@ -59,8 +67,6 @@ fn load_data(query: &GitHubQuery) -> Result<OutputData, Box<dyn Error>> {
     issue_data.fetch_data(query, &fetch_list)?;
     issue_data.store_to_file(CACHE_FILE)?;
 
-    let latest_tag = query.query_latest_tag(&*RUSTC_REPO)?;
-    let latest_stable = Version::parse(&latest_tag)?;
     Ok(OutputData::from_input(
         input_data,
         &issue_data,

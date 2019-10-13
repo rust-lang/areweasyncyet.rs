@@ -110,3 +110,11 @@
   date: 2019-09-02
   url: https://tmandry.gitlab.io/blog/posts/optimizing-await-2/
 
+- title: "Async Foundations Update: Time for polish!"
+  date: 2019-10-07
+  url: https://blog.rust-lang.org/inside-rust/2019/10/07/AsyncAwait-WG-Focus-Issues.html
+
+- title: "Improving async-await's \"Future is not Send\" diagnostic"
+  date: 2019-10-11
+  url: https://blog.rust-lang.org/inside-rust/2019/10/11/AsyncAwait-Not-Send-Error-Improvements.html
+

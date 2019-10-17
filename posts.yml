@@ -118,3 +118,7 @@
   date: 2019-10-11
   url: https://blog.rust-lang.org/inside-rust/2019/10/11/AsyncAwait-Not-Send-Error-Improvements.html
 
+- title: "Asynchronous Destructors"
+  date: 2019-10-16
+  url: https://boats.gitlab.io/blog/post/poll-drop/
+

@@ -122,3 +122,7 @@
   date: 2019-10-16
   url: https://boats.gitlab.io/blog/post/poll-drop/
 
+- title: "why async fn in traits are hard"
+  date: 2019-10-26
+  url: http://smallcultfollowing.com/babysteps/blog/2019/10/26/async-fn-in-traits-are-hard/
+

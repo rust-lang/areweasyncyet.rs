@@ -17,9 +17,7 @@
   You can use it with the active ecosystem of asynchronous I/O around
   <a href="https://crates.io/crates/futures">futures</a>,
   <a href="https://crates.io/crates/mio">mio</a>, and
-  <a href="https://crates.io/crates/tokio">tokio</a>,
-  as well as emerging libraries like
-  <a href="https://crates.io/crates/runtime">runtime</a> and
+  <a href="https://crates.io/crates/tokio">tokio</a>, and
   <a href="https://crates.io/crates/async-std">async-std</a>.
 </p>
 {%- else %}
@@ -28,8 +26,9 @@
   Although the more ergonomic syntax is not ready yet,
   <strong>asynchronous I/O is already possible in Rust</strong> with
   ecosystem around <a href="https://crates.io/crates/futures">futures</a>,
-  <a href="https://crates.io/crates/mio">mio</a>, and
-  <a href="https://crates.io/crates/tokio">tokio</a>.
+  <a href="https://crates.io/crates/mio">mio</a>,
+  <a href="https://crates.io/crates/tokio">tokio</a>, and
+  <a href="https://crates.io/crates/async-std">async-std</a>.
 </p>
 {%- endif %}
 <h2><code>async</code> syntax and blockers</h2>
@@ -49,27 +48,16 @@
     <a href="https://github.com/tokio-rs/tokio/issues/1201">#1201</a>
   </li>
   <li>
-    <a href="https://crates.io/crates/romio">romio</a> -
-    A fork of tokio compatible with the new futures API
-    as well as the <code>async</code>/<code>await</code> syntax
-    to enable people to experiment with the new syntax.
+    <a href="https://crates.io/crates/async-std">async-std</a> -
+    Async version of the Rust standard library. It provides all the interfaces
+    you are used to, but in an async version and designed for Rust's
+    <code>async</code>/<code>await</code> syntax.
   </li>
   <li>
     <a href="https://crates.io/crates/thin_main_loop">thin_main_loop</a> -
     An experimental, cross platform, main loop and futures executor/reactor, 
     that binds to the OS APIs suitable for making native GUI applications. 
     It supports callbacks as well as the <code>async</code>/<code>await</code> syntax.
-  </li>
-  <li>
-    <a href="https://crates.io/crates/runtime">runtime</a> -
-    A platform-agnostic library that intends
-    to make async Rust both flexible and easy.
-    It was announced by the Async Ecosystem WG as
-    an exploration towards ecosystem standardization.
-  </li>
-  <li>
-    <a href="https://crates.io/crates/async-std">async-std</a> -
-    Async version of the Rust standard library.
   </li>
   <li>
     <a href="https://crates.io/crates/async-task">async-task</a> -

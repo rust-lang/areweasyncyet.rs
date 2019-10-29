@@ -26,7 +26,8 @@ lazy_static! {
     static ref RUSTC_REPO: Repo = Repo::new("rust-lang", "rust");
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn Error>> {
     let _ = dotenv::dotenv();
     env_logger::init();
     let token = env::var("GITHUB_TOKEN")?;
@@ -34,9 +35,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let query = GitHubQuery::new(&client, &token);
 
     let stabilized_version = Version::new(1, 39, 0);
-    let latest_stable = load_version(&query)?;
+    let latest_stable = load_version(&query).await?;
+    let data = load_data(&query, &latest_stable).await?;
     let is_stable = latest_stable >= stabilized_version;
-    let data = load_data(&query, &latest_stable)?;
     let posts = posts::load_posts()?;
 
     // Generate page
@@ -54,17 +55,20 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn load_version(query: &GitHubQuery) -> Result<Version, Box<dyn Error>> {
-    let latest_tag = query.query_latest_tag(&*RUSTC_REPO)?;
+async fn load_version(query: &GitHubQuery<'_>) -> Result<Version, Box<dyn Error>> {
+    let latest_tag = query.query_latest_tag(&*RUSTC_REPO).await?;
     Ok(Version::parse(&latest_tag)?)
 }
 
-fn load_data(query: &GitHubQuery, latest_stable: &Version) -> Result<OutputData, Box<dyn Error>> {
+async fn load_data(
+    query: &GitHubQuery<'_>,
+    latest_stable: &Version,
+) -> Result<OutputData, Box<dyn Error>> {
     let input_data = InputData::from_file(DATA_FILE)?;
     let fetch_list = input_data.get_fetch_list();
 
     let mut issue_data = IssueData::from_file(CACHE_FILE).unwrap_or_default();
-    issue_data.fetch_data(query, &fetch_list)?;
+    issue_data.fetch_data(query, &fetch_list).await?;
     issue_data.store_to_file(CACHE_FILE)?;
 
     Ok(OutputData::from_input(

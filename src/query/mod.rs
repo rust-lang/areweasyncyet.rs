@@ -39,7 +39,7 @@ impl<'a> GitHubQuery<'a> {
         GitHubQuery { client, token }
     }
 
-    fn send_query<Q, D>(&self, name: &'static str, query: &Q) -> Result<D, Box<dyn Error>>
+    async fn send_query<Q, D>(&self, name: &'static str, query: Q) -> Result<D, Box<dyn Error>>
     where
         Q: Serialize,
         for<'de> Response<D>: Deserialize<'de>,
@@ -48,9 +48,11 @@ impl<'a> GitHubQuery<'a> {
             .client
             .post("https://api.github.com/graphql")
             .bearer_auth(self.token)
-            .json(query)
-            .send()?
-            .json::<Response<D>>()?;
+            .json(&query)
+            .send()
+            .await?
+            .json::<Response<D>>()
+            .await?;
         if let Some(errors) = resp.errors {
             return Err(QueryError { name, errors }.into());
         }

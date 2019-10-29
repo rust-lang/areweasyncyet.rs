@@ -15,7 +15,7 @@ use std::error::Error;
 struct Query;
 
 impl GitHubQuery<'_> {
-    pub fn query_issues_with_label(
+    pub async fn query_issues_with_label(
         &self,
         repo: &Repo,
         label: &str,
@@ -30,7 +30,7 @@ impl GitHubQuery<'_> {
                 label: label.to_string(),
                 cursor,
             });
-            let data: ResponseData = self.send_query("issues_with_labels", &query)?;
+            let data: ResponseData = self.send_query("issues_with_labels", &query).await?;
             let repository = data.repository.unwrap();
             let issues = repository.issues;
             let nodes = issues.nodes.unwrap();

@@ -14,13 +14,13 @@ use std::error::Error;
 struct Query;
 
 impl GitHubQuery<'_> {
-    pub fn query_latest_tag(&self, repo: &Repo) -> Result<String, Box<dyn Error>> {
+    pub async fn query_latest_tag(&self, repo: &Repo) -> Result<String, Box<dyn Error>> {
         info!("getting latest tag on {}...", repo);
         let query = Query::build_query(Variables {
             owner: repo.owner.clone(),
             name: repo.name.clone(),
         });
-        let data: ResponseData = self.send_query("latest_tag", &query)?;
+        let data: ResponseData = self.send_query("latest_tag", &query).await?;
         let repository = data.repository.unwrap();
         let refs = repository.refs.unwrap();
         let mut nodes = refs.nodes.unwrap();

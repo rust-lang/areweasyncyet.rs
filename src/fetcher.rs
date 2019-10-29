@@ -32,10 +32,10 @@ impl IssueData {
     /// Nothing would be updated if everything is available.
     ///
     /// Returns whether anything is updated when succeeded.
-    pub fn fetch_data(
+    pub async fn fetch_data(
         &mut self,
-        query: &GitHubQuery,
-        fetch_list: &FetchList,
+        query: &GitHubQuery<'_>,
+        fetch_list: &FetchList<'_>,
     ) -> Result<bool, Box<dyn Error>> {
         let mut updated = false;
         for (repo, label) in fetch_list.labels.iter() {
@@ -43,7 +43,7 @@ impl IssueData {
             if self.labels.contains_key(&key) {
                 continue;
             }
-            let issues = query.query_issues_with_label(repo, label)?;
+            let issues = query.query_issues_with_label(repo, label).await?;
             let issues = issues
                 .iter()
                 .map(|issue| {
@@ -60,7 +60,7 @@ impl IssueData {
             if self.issues.contains_key(&key) {
                 continue;
             }
-            let issue = query.query_issue_or_pr(repo, *issue_id)?;
+            let issue = query.query_issue_or_pr(repo, *issue_id).await?;
             self.issues.insert(key, issue);
             updated = true;
         }

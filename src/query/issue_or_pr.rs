@@ -17,14 +17,18 @@ use std::error::Error;
 struct Query;
 
 impl GitHubQuery<'_> {
-    pub fn query_issue_or_pr(&self, repo: &Repo, number: IssueId) -> Result<Issue, Box<dyn Error>> {
+    pub async fn query_issue_or_pr(
+        &self,
+        repo: &Repo,
+        number: IssueId,
+    ) -> Result<Issue, Box<dyn Error>> {
         info!("fetching issue {}#{}...", repo, number);
         let query = Query::build_query(Variables {
             owner: repo.owner.clone(),
             name: repo.name.clone(),
             number: i64::from(number),
         });
-        let data: ResponseData = self.send_query("issue_or_pr", &query)?;
+        let data: ResponseData = self.send_query("issue_or_pr", &query).await?;
         let repository = data.repository.unwrap();
         match repository.issue_or_pull_request.unwrap() {
             IssueOrPr::Issue(issue) => Ok(Issue {

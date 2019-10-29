@@ -2,7 +2,7 @@ use crate::data::input::InputData;
 use crate::data::output::OutputData;
 use crate::fetcher::IssueData;
 use crate::query::{GitHubQuery, Repo};
-use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
 use semver::Version;
 use std::env;
 use std::error::Error;
@@ -20,11 +20,9 @@ const DATA_FILE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/data.yml");
 const POSTS_FILE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/posts.yml");
 const CACHE_FILE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/cache.json");
 
-lazy_static! {
-    static ref OUT_DIR: &'static Path = Path::new("out");
-    static ref RFC_REPO: Repo = Repo::new("rust-lang", "rfcs");
-    static ref RUSTC_REPO: Repo = Repo::new("rust-lang", "rust");
-}
+static OUT_DIR: Lazy<&'static Path> = Lazy::new(|| Path::new("out"));
+static RFC_REPO: Lazy<Repo> = Lazy::new(|| Repo::new("rust-lang", "rfcs"));
+static RUSTC_REPO: Lazy<Repo> = Lazy::new(|| Repo::new("rust-lang", "rust"));
 
 fn main() -> Result<(), Box<dyn Error>> {
     let _ = dotenv::dotenv();

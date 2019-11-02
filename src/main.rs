@@ -3,7 +3,7 @@ use crate::data::output::OutputData;
 use crate::fetcher::IssueData;
 use crate::page_gen::PageGenData;
 use crate::query::{GitHubQuery, Repo};
-use futures_util::future;
+use futures_util::try_future::try_join;
 use lazy_static::lazy_static;
 use semver::Version;
 use std::env;
@@ -11,7 +11,6 @@ use std::error::Error;
 use std::fs;
 use std::io;
 use std::path::Path;
-use tuple_transpose::TupleTranspose;
 
 mod data;
 mod fetcher;
@@ -58,12 +57,11 @@ async fn load_page_gen_data(query: &GitHubQuery<'_>) -> Result<PageGenData, Box<
     let fetch_list = input_data.get_fetch_list();
 
     let mut issue_data = IssueData::from_file(CACHE_FILE).unwrap_or_default();
-    let (latest_tag, _) = future::join(
+    let (latest_tag, _) = try_join(
         query.query_latest_tag(&*RUSTC_REPO),
         issue_data.fetch_data(query, &fetch_list),
     )
-    .await
-    .transpose()?;
+    .await?;
     issue_data.store_to_file(CACHE_FILE)?;
 
     let stabilized_version = Version::new(1, 39, 0);

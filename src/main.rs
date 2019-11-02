@@ -1,7 +1,9 @@
 use crate::data::input::InputData;
 use crate::data::output::OutputData;
 use crate::fetcher::IssueData;
+use crate::page_gen::PageGenData;
 use crate::query::{GitHubQuery, Repo};
+use futures_util::future;
 use lazy_static::lazy_static;
 use semver::Version;
 use std::env;
@@ -9,6 +11,7 @@ use std::error::Error;
 use std::fs;
 use std::io;
 use std::path::Path;
+use tuple_transpose::TupleTranspose;
 
 mod data;
 mod fetcher;
@@ -33,12 +36,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let token = env::var("GITHUB_TOKEN")?;
     let client = reqwest::Client::new();
     let query = GitHubQuery::new(&client, &token);
-
-    let stabilized_version = Version::new(1, 39, 0);
-    let latest_stable = load_version(&query).await?;
-    let data = load_data(&query, &latest_stable).await?;
-    let is_stable = latest_stable >= stabilized_version;
-    let posts = posts::load_posts()?;
+    let data = load_page_gen_data(&query).await?;
 
     // Generate page
     if OUT_DIR.is_dir() {
@@ -46,7 +44,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     } else {
         fs::create_dir_all(&*OUT_DIR)?;
     }
-    page_gen::generate(is_stable, &data.0, &posts)?;
+    page_gen::generate(&data)?;
     copy_static_files()?;
     fs::copy(
         concat!(env!("CARGO_MANIFEST_DIR"), "/CNAME"),
@@ -55,27 +53,28 @@ async fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-async fn load_version(query: &GitHubQuery<'_>) -> Result<Version, Box<dyn Error>> {
-    let latest_tag = query.query_latest_tag(&*RUSTC_REPO).await?;
-    Ok(Version::parse(&latest_tag)?)
-}
-
-async fn load_data(
-    query: &GitHubQuery<'_>,
-    latest_stable: &Version,
-) -> Result<OutputData, Box<dyn Error>> {
+async fn load_page_gen_data(query: &GitHubQuery<'_>) -> Result<PageGenData, Box<dyn Error>> {
     let input_data = InputData::from_file(DATA_FILE)?;
     let fetch_list = input_data.get_fetch_list();
 
     let mut issue_data = IssueData::from_file(CACHE_FILE).unwrap_or_default();
-    issue_data.fetch_data(query, &fetch_list).await?;
+    let (latest_tag, _) = future::join(
+        query.query_latest_tag(&*RUSTC_REPO),
+        issue_data.fetch_data(query, &fetch_list),
+    )
+    .await
+    .transpose()?;
     issue_data.store_to_file(CACHE_FILE)?;
 
-    Ok(OutputData::from_input(
-        input_data,
-        &issue_data,
-        &latest_stable,
-    ))
+    let stabilized_version = Version::new(1, 39, 0);
+    let latest_stable = Version::parse(&latest_tag)?;
+    let output_data = OutputData::from_input(input_data, &issue_data, &latest_stable);
+
+    Ok(PageGenData {
+        is_stable: latest_stable >= stabilized_version,
+        items: output_data.0,
+        posts: posts::load_posts()?,
+    })
 }
 
 fn clear_dir(dir: &Path) -> io::Result<()> {

@@ -70,7 +70,8 @@ impl IssueData {
                 self.labels.insert(key, issues);
                 updated = true;
                 ok(())
-            }).await?;
+            })
+            .await?;
 
         fetch_list
             .issues
@@ -92,7 +93,8 @@ impl IssueData {
                 self.issues.insert(key, issue);
                 updated = true;
                 ok(())
-            }).await?;
+            })
+            .await?;
 
         Ok(updated)
     }

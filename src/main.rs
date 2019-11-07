@@ -31,9 +31,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let client = reqwest::Client::new();
     let query = GitHubQuery::new(&client, &token);
 
-    let stabilized_version = Version::new(1, 39, 0);
     let latest_stable = load_version(&query)?;
-    let is_stable = latest_stable >= stabilized_version;
     let data = load_data(&query, &latest_stable)?;
     let posts = posts::load_posts()?;
 
@@ -43,7 +41,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     } else {
         fs::create_dir_all(&*OUT_DIR)?;
     }
-    page_gen::generate(is_stable, &data.0, &posts)?;
+    page_gen::generate(&data.0, &posts)?;
     copy_static_files()?;
     fs::copy(
         concat!(env!("CARGO_MANIFEST_DIR"), "/CNAME"),

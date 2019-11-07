@@ -7,7 +7,6 @@
 <link rel="icon" href="favicon.ico">
 <body>
 <h1>Are we <code>async</code> yet?</h1>
-{%- if is_stable %}
 <p><strong class="extra">&#x1f389; Yes! &#x1f389;</strong></p>
 <p>
   The long-awaited <code>async</code>/<code>await</code> syntax
@@ -20,17 +19,6 @@
   <a href="https://crates.io/crates/tokio">tokio</a>, and
   <a href="https://crates.io/crates/async-std">async-std</a>.
 </p>
-{%- else %}
-<p>For <code>async</code> syntax, not yet, but <strong>almost</strong>!</p>
-<p>
-  Although the more ergonomic syntax is not ready yet,
-  <strong>asynchronous I/O is already possible in Rust</strong> with
-  ecosystem around <a href="https://crates.io/crates/futures">futures</a>,
-  <a href="https://crates.io/crates/mio">mio</a>,
-  <a href="https://crates.io/crates/tokio">tokio</a>, and
-  <a href="https://crates.io/crates/async-std">async-std</a>.
-</p>
-{%- endif %}
 <h2><code>async</code> syntax and blockers</h2>
 <ul id="async-blockers">
   {{ macros::render_items(items=items.async_blockers) }}

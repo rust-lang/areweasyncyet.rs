@@ -62,12 +62,10 @@ async fn load_page_gen_data(query: &GitHubQuery<'_>) -> Result<PageGenData, Box<
     .await?;
     issue_data.store_to_file(CACHE_FILE)?;
 
-    let stabilized_version = Version::new(1, 39, 0);
     let latest_stable = Version::parse(&latest_tag)?;
     let output_data = OutputData::from_input(input_data, &issue_data, &latest_stable);
 
     Ok(PageGenData {
-        is_stable: latest_stable >= stabilized_version,
         items: output_data.0,
         posts: posts::load_posts()?,
     })

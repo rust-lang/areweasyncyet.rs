@@ -3,7 +3,7 @@ use crate::data::output::OutputData;
 use crate::fetcher::IssueData;
 use crate::page_gen::PageGenData;
 use crate::query::{GitHubQuery, Repo};
-use futures_util::try_future::try_join;
+use futures_util::future::try_join;
 use lazy_static::lazy_static;
 use semver::Version;
 use std::env;

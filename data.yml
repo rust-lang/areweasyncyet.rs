@@ -59,7 +59,7 @@ async_extensions:
     deps:
       - title: "Named existentials and impl Trait variable declarations"
         rfc: "2071-impl-trait-existential-types"
-        tracking: 34511
+        tracking: 63066
 
       - title: "Generic associated types (GAT)"
         rfc: "1598-generic_associated_types"

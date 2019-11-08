@@ -1,6 +1,6 @@
 # Are we async yet
 
-[![Build Status](https://travis-ci.org/rustasync/areweasyncyet.rs.svg?branch=master)](https://travis-ci.org/rustasync/areweasyncyet.rs)
+[![Build Status](https://travis-ci.org/rust-lang/areweasyncyet.rs.svg?branch=master)](https://travis-ci.org/rust-lang/areweasyncyet.rs)
 
 areweasyncyet.rs is a website for tracking development progress of
 `async`/`await` syntax of Rust programming language in

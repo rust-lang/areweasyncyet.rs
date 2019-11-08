@@ -8,7 +8,7 @@ publish = false
 
 [dependencies]
 chrono = "0.4.6"
-dotenv = "0.14.1"
+dotenv = "0.15.0"
 env_logger = "0.7.0"
 graphql_client = "0.8.0"
 log = "0.4.6"

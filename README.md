@@ -46,4 +46,4 @@ After the first execution,
 fetched data will be stored in `cache.json` file in the current directory
 to avoid repeatedly fetching data when updating `data.yml` and `templates`.
 If the latest data from GitHub is needed,
-simply remove `cache.json` file.
+simply remove the `cache.json` file.

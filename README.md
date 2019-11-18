@@ -39,11 +39,11 @@ python3 -mhttp.server
 
 ## Development
 
-Majority of the Rust code is for handling issue data from GitHub.
+The Rust code handles issue data from GitHub.
 Content mainly resides in `data.yml` and `templates` directory.
 
 After the first execution,
-fetched data would be stored in `cache.json` file in the current directory
+fetched data will be stored in `cache.json` file in the current directory
 to avoid repeatedly fetching data when updating `data.yml` and `templates`.
-If latest data from GitHub is needed,
-simply remove that cache file.
+If the latest data from GitHub is needed,
+simply remove the `cache.json` file.

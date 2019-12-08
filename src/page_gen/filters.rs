@@ -5,7 +5,7 @@ use tera::{self, Value};
 
 static RE_CODIFY: Lazy<Regex> = Lazy::new(|| Regex::new(r"\&#96;(.+?)\&#96;").unwrap());
 
-pub fn codify(value: Value, _: HashMap<String, Value>) -> tera::Result<Value> {
+pub fn codify(value: &Value, _: &HashMap<String, Value>) -> tera::Result<Value> {
     let value = match value {
         Value::String(s) => s,
         _ => return Err(format!("unsupported value for codify: {:?}", value).into()),
@@ -16,17 +16,17 @@ pub fn codify(value: Value, _: HashMap<String, Value>) -> tera::Result<Value> {
     Ok(result.into())
 }
 
-pub fn pr_url(value: Value, _: HashMap<String, Value>) -> tera::Result<Value> {
+pub fn pr_url(value: &Value, _: &HashMap<String, Value>) -> tera::Result<Value> {
     let number = get_issue_number(value)?;
     Ok(format!("https://github.com/rust-lang/rust/pull/{}", number).into())
 }
 
-pub fn issue_url(value: Value, _: HashMap<String, Value>) -> tera::Result<Value> {
+pub fn issue_url(value: &Value, _: &HashMap<String, Value>) -> tera::Result<Value> {
     let number = get_issue_number(value)?;
     Ok(format!("https://github.com/rust-lang/rust/issues/{}", number).into())
 }
 
-fn get_issue_number(value: Value) -> tera::Result<u64> {
+fn get_issue_number(value: &Value) -> tera::Result<u64> {
     let number = match value {
         Value::Number(n) => n
             .as_u64()

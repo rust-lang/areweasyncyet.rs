@@ -4,6 +4,7 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::fmt::{self, Display};
 use std::error::Error;
+use reqwest::header::USER_AGENT;
 
 mod issue_or_pr;
 mod issues_with_label;
@@ -49,6 +50,7 @@ impl<'a> GitHubQuery<'a> {
             .client
             .post("https://api.github.com/graphql")
             .bearer_auth(self.token)
+            .header(USER_AGENT, concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION")))
             .json(&query)
             .send()
             .await?

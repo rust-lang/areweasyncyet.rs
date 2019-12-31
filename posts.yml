@@ -126,3 +126,7 @@
   date: 2019-10-26
   url: http://smallcultfollowing.com/babysteps/blog/2019/10/26/async-fn-in-traits-are-hard/
 
+- title: "Async-await on stable Rust!"
+  date: 2019-11-07
+  url: https://blog.rust-lang.org/2019/11/07/Async-await-stable.html
+

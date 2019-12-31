@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
 use graphql_client::Response;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
@@ -53,9 +53,11 @@ impl<'a> GitHubQuery<'a> {
             .header(USER_AGENT, concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION")))
             .json(&query)
             .send()
-            .await?
+            .await
+            .context("failed to send request")?
             .json::<Response<D>>()
-            .await?;
+            .await
+            .context("failed to parse response")?;
         if let Some(errors) = resp.errors {
             return Err(QueryError { name, errors }.into());
         }

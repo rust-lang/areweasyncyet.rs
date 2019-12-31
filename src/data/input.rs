@@ -1,9 +1,9 @@
 use super::{IssueId, Link};
 use crate::query::Repo;
 use crate::{RFC_REPO, RUSTC_REPO};
+use anyhow::{Context, Result};
 use serde::Deserialize;
 use std::collections::HashMap;
-use std::error::Error;
 use std::fs::File;
 use std::path::Path;
 
@@ -29,9 +29,9 @@ pub struct Stabilization {
 }
 
 impl InputData {
-    pub fn from_file(path: impl AsRef<Path>) -> Result<Self, Box<dyn Error>> {
+    pub fn from_file(path: impl AsRef<Path>) -> Result<Self> {
         let file = File::open(path)?;
-        let data = serde_yaml::from_reader(file)?;
+        let data = serde_yaml::from_reader(file).context("failed to read yaml")?;
         Ok(InputData(data))
     }
 

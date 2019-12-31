@@ -3,7 +3,6 @@ use super::Repo;
 use crate::query::GitHubQuery;
 use graphql_client::GraphQLQuery;
 use log::info;
-use std::error::Error;
 
 #[derive(GraphQLQuery)]
 #[graphql(
@@ -14,7 +13,7 @@ use std::error::Error;
 struct Query;
 
 impl GitHubQuery<'_> {
-    pub async fn query_latest_tag(&self, repo: &Repo) -> Result<String, Box<dyn Error>> {
+    pub async fn query_latest_tag(&self, repo: &Repo) -> anyhow::Result<String> {
         info!("getting latest tag on {}...", repo);
         let query = Query::build_query(Variables {
             owner: repo.owner.clone(),

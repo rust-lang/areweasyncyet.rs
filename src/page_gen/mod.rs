@@ -1,8 +1,8 @@
 use crate::data::output::Item;
 use crate::posts::Post;
+use anyhow::Result;
 use chrono::Utc;
 use std::collections::HashMap;
-use std::error::Error;
 use std::fs;
 use tera::{Context, Tera};
 
@@ -15,7 +15,7 @@ pub struct PageGenData {
     pub posts: Vec<Post>,
 }
 
-pub fn generate(data: &PageGenData) -> Result<(), Box<dyn Error>> {
+pub fn generate(data: &PageGenData) -> Result<()> {
     let mut tera = Tera::new("templates/**/*.html")?;
     tera.register_filter("codify", filters::codify);
     tera.register_filter("pr_url", filters::pr_url);

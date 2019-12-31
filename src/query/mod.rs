@@ -1,8 +1,9 @@
+use anyhow::Result;
 use graphql_client::Response;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
-use std::error::Error;
 use std::fmt::{self, Display};
+use std::error::Error;
 
 mod issue_or_pr;
 mod issues_with_label;
@@ -39,7 +40,7 @@ impl<'a> GitHubQuery<'a> {
         GitHubQuery { client, token }
     }
 
-    async fn send_query<Q, D>(&self, name: &'static str, query: Q) -> Result<D, Box<dyn Error>>
+    async fn send_query<Q, D>(&self, name: &'static str, query: Q) -> Result<D>
     where
         Q: Serialize,
         for<'de> Response<D>: Deserialize<'de>,

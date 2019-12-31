@@ -3,11 +3,11 @@ use crate::data::output::OutputData;
 use crate::fetcher::IssueData;
 use crate::page_gen::PageGenData;
 use crate::query::{GitHubQuery, Repo};
+use anyhow::{Context, Result};
 use futures_util::future::try_join;
 use once_cell::sync::Lazy;
 use semver::Version;
 use std::env;
-use std::error::Error;
 use std::fs;
 use std::io;
 use std::path::Path;
@@ -27,7 +27,7 @@ static RFC_REPO: Lazy<Repo> = Lazy::new(|| Repo::new("rust-lang", "rfcs"));
 static RUSTC_REPO: Lazy<Repo> = Lazy::new(|| Repo::new("rust-lang", "rust"));
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
+async fn main() -> Result<()> {
     let _ = dotenv::dotenv();
     env_logger::init();
     let token = env::var("GITHUB_TOKEN")?;
@@ -37,21 +37,21 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     // Generate page
     if OUT_DIR.is_dir() {
-        clear_dir(&*OUT_DIR)?;
+        clear_dir(&*OUT_DIR).context("failed to clear out dir")?;
     } else {
-        fs::create_dir_all(&*OUT_DIR)?;
+        fs::create_dir_all(&*OUT_DIR).context("failed to create out dir")?;
     }
-    page_gen::generate(&data)?;
-    copy_static_files()?;
+    page_gen::generate(&data).context("failed to generate data")?;
+    copy_static_files().context("failed to copy static files")?;
     fs::copy(
         concat!(env!("CARGO_MANIFEST_DIR"), "/CNAME"),
         OUT_DIR.join("CNAME"),
-    )?;
+    ).context("failed to copy CNAME")?;
     Ok(())
 }
 
-async fn load_page_gen_data(query: &GitHubQuery<'_>) -> Result<PageGenData, Box<dyn Error>> {
-    let input_data = InputData::from_file(DATA_FILE)?;
+async fn load_page_gen_data(query: &GitHubQuery<'_>) -> Result<PageGenData> {
+    let input_data = InputData::from_file(DATA_FILE).context("failed to read input data")?;
     let fetch_list = input_data.get_fetch_list();
 
     let mut issue_data = IssueData::from_file(CACHE_FILE).unwrap_or_default();
@@ -60,14 +60,14 @@ async fn load_page_gen_data(query: &GitHubQuery<'_>) -> Result<PageGenData, Box<
         issue_data.fetch_data(query, &fetch_list),
     )
     .await?;
-    issue_data.store_to_file(CACHE_FILE)?;
+    issue_data.store_to_file(CACHE_FILE).context("failed to store to cache file")?;
 
     let latest_stable = Version::parse(&latest_tag)?;
     let output_data = OutputData::from_input(input_data, &issue_data, &latest_stable);
 
     Ok(PageGenData {
         items: output_data.0,
-        posts: posts::load_posts()?,
+        posts: posts::load_posts().context("failed to load posts")?,
     })
 }
 

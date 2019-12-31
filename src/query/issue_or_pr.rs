@@ -6,7 +6,6 @@ use crate::data::{Issue, IssueId};
 use graphql_client::GraphQLQuery;
 use log::info;
 use matches::matches;
-use std::error::Error;
 
 #[derive(GraphQLQuery)]
 #[graphql(
@@ -21,7 +20,7 @@ impl GitHubQuery<'_> {
         &self,
         repo: &Repo,
         number: IssueId,
-    ) -> Result<Issue, Box<dyn Error>> {
+    ) -> anyhow::Result<Issue> {
         info!("fetching issue {}#{}...", repo, number);
         let query = Query::build_query(Variables {
             owner: repo.owner.clone(),

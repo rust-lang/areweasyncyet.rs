@@ -4,7 +4,6 @@ use crate::data::Issue;
 use graphql_client::GraphQLQuery;
 use log::info;
 use matches::matches;
-use std::error::Error;
 
 #[derive(GraphQLQuery)]
 #[graphql(
@@ -19,7 +18,7 @@ impl GitHubQuery<'_> {
         &self,
         repo: &Repo,
         label: &str,
-    ) -> Result<Vec<Issue>, Box<dyn Error>> {
+    ) -> anyhow::Result<Vec<Issue>> {
         info!("fetching issues of label {} in {}...", label, repo);
         let mut result = Vec::new();
         let mut cursor = None;

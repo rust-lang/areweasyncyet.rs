@@ -1,12 +1,12 @@
 use crate::data::input::FetchList;
 use crate::data::{Issue, IssueId};
 use crate::query::{GitHubQuery, Repo};
+use anyhow::{Error, Result};
 use futures_util::future::ok;
 use futures_util::stream::{FuturesUnordered, TryStreamExt};
 use serde::{Deserialize, Serialize};
 use serde_with::rust::hashmap_as_tuple_list;
 use std::collections::HashMap;
-use std::error::Error;
 use std::fs::File;
 use std::path::Path;
 
@@ -19,12 +19,12 @@ pub struct IssueData {
 }
 
 impl IssueData {
-    pub fn from_file(path: impl AsRef<Path>) -> Result<Self, Box<dyn Error>> {
+    pub fn from_file(path: impl AsRef<Path>) -> Result<Self> {
         let file = File::open(path)?;
         Ok(serde_json::from_reader(file)?)
     }
 
-    pub fn store_to_file(&self, path: impl AsRef<Path>) -> Result<(), Box<dyn Error>> {
+    pub fn store_to_file(&self, path: impl AsRef<Path>) -> Result<()> {
         let file = File::create(path)?;
         serde_json::to_writer(file, self)?;
         Ok(())
@@ -38,7 +38,7 @@ impl IssueData {
         &mut self,
         query: &GitHubQuery<'_>,
         fetch_list: &FetchList<'_>,
-    ) -> Result<bool, Box<dyn Error>> {
+    ) -> Result<bool> {
         let mut updated = false;
         fetch_list
             .labels
@@ -51,7 +51,7 @@ impl IssueData {
                     Some(async {
                         let (repo, label) = &key;
                         let issues = query.query_issues_with_label(repo, label).await?;
-                        Ok::<_, Box<dyn Error>>((key, issues))
+                        Ok::<_, Error>((key, issues))
                     })
                 }
             })
@@ -83,7 +83,7 @@ impl IssueData {
                     Some(async {
                         let (repo, issue_id) = &key;
                         let issue = query.query_issue_or_pr(repo, *issue_id).await?;
-                        Ok::<_, Box<dyn Error>>((key, issue))
+                        Ok::<_, Error>((key, issue))
                     })
                 }
             })

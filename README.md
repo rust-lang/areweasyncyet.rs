@@ -34,7 +34,7 @@ the generated HTML will be in the `out` directory.
 You can use any web server to check it out in your browser:
 ```
 cd out
-python3 -mhttp.server
+python3 -m http.server
 ```
 
 ## Development

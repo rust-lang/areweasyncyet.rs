@@ -64,6 +64,9 @@ async_extensions:
       - title: "Generic associated types (GAT)"
         rfc: "1598-generic_associated_types"
         tracking: 44265
+        stabilized:
+          version: "1.65"
+          pr: 96709
 
       - title: "Workaround is available as an attribute macro:"
         link:

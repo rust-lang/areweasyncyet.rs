@@ -3,7 +3,7 @@ name = "areweasyncyet"
 version = "0.1.0"
 authors = ["Xidorn Quan <me@upsuper.org>"]
 license = "MIT OR Apache-2.0"
-edition = "2018"
+edition = "2021"
 publish = false
 
 [dependencies]

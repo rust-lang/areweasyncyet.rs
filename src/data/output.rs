@@ -3,7 +3,7 @@ use super::{Issue, IssueId, Link};
 use crate::fetcher::IssueData;
 use crate::query::Repo;
 use crate::{RFC_REPO, RUSTC_REPO};
-use semver::Version;
+use semver::{BuildMetadata, Prerelease, Version};
 use serde::Serialize;
 use std::collections::HashMap;
 
@@ -112,7 +112,10 @@ impl Builder<'_> {
             return VersionState::Stable;
         }
         let mut beta = self.latest_stable.clone();
-        beta.increment_minor();
+        beta.minor += 1;
+        beta.patch = 0;
+        beta.pre = Prerelease::EMPTY;
+        beta.build = BuildMetadata::EMPTY;
         if beta >= version {
             return VersionState::Beta;
         }

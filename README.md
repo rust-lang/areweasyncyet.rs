@@ -30,10 +30,10 @@ RUST_LOG=areweasyncyet=debug
 to the `.env` file.
 
 From there,
-the generated HTML will be in the `out` directory.
+the generated HTML will be in the `_site` directory.
 You can use any web server to check it out in your browser:
 ```
-cd out
+cd _site
 python3 -m http.server
 ```
 

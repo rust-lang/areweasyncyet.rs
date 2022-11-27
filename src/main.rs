@@ -22,7 +22,7 @@ const DATA_FILE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/data.yml");
 const POSTS_FILE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/posts.yml");
 const CACHE_FILE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/cache.json");
 
-static OUT_DIR: Lazy<&'static Path> = Lazy::new(|| Path::new("out"));
+static OUT_DIR: Lazy<&'static Path> = Lazy::new(|| Path::new("_site"));
 static RFC_REPO: Lazy<Repo> = Lazy::new(|| Repo::new("rust-lang", "rfcs"));
 static RUSTC_REPO: Lazy<Repo> = Lazy::new(|| Repo::new("rust-lang", "rust"));
 

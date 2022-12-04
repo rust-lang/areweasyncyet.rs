@@ -1,6 +1,6 @@
 .env
 .idea
 cache.json
-/out
+/_site
 /target
 **/*.rs.bk

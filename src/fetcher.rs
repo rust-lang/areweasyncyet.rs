@@ -5,16 +5,17 @@ use anyhow::{Error, Result};
 use futures_util::future::ok;
 use futures_util::stream::{FuturesUnordered, TryStreamExt};
 use serde::{Deserialize, Serialize};
-use serde_with::rust::hashmap_as_tuple_list;
+use serde_with::serde_as;
 use std::collections::HashMap;
 use std::fs::File;
 use std::path::Path;
 
+#[serde_as]
 #[derive(Default, Deserialize, Serialize)]
 pub struct IssueData {
-    #[serde(with = "hashmap_as_tuple_list")]
+    #[serde_as(as = "Vec<(_, _)>")]
     pub labels: HashMap<(Repo, String), Vec<IssueId>>,
-    #[serde(with = "hashmap_as_tuple_list")]
+    #[serde_as(as = "Vec<(_, _)>")]
     pub issues: HashMap<(Repo, IssueId), Issue>,
 }
 

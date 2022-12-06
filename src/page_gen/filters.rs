@@ -10,7 +10,7 @@ pub fn codify(value: &Value, _: &HashMap<String, Value>) -> tera::Result<Value> 
         Value::String(s) => s,
         _ => return Err(format!("unsupported value for codify: {:?}", value).into()),
     };
-    let result = RE_CODIFY.replace_all(&value, |captures: &Captures| {
+    let result = RE_CODIFY.replace_all(value, |captures: &Captures| {
         format!("<code>{}</code>", captures.get(1).unwrap().as_str())
     });
     Ok(result.into())

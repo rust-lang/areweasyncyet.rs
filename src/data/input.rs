@@ -54,7 +54,7 @@ pub struct FetchList<'a> {
 impl<'a> FetchList<'a> {
     fn fill_from_item(&mut self, item: &'a Item) {
         if let Some(rfc) = &item.rfc {
-            self.issues.push((RFC_REPO.clone(), parse_rfc_for_id(&rfc)));
+            self.issues.push((RFC_REPO.clone(), parse_rfc_for_id(rfc)));
         }
         if let Some(tracking) = &item.tracking {
             self.issues.push((RUSTC_REPO.clone(), *tracking));
@@ -67,13 +67,13 @@ impl<'a> FetchList<'a> {
         }
         if let Some(unresolved) = &item.unresolved {
             self.issues
-                .push((RFC_REPO.clone(), parse_rfc_for_id(&unresolved)));
+                .push((RFC_REPO.clone(), parse_rfc_for_id(unresolved)));
         }
         item.deps.iter().for_each(|dep| self.fill_from_item(dep));
     }
 }
 
 fn parse_rfc_for_id(rfc: &str) -> IssueId {
-    let dash = rfc.find('-').unwrap_or_else(|| rfc.len());
+    let dash = rfc.find('-').unwrap_or(rfc.len());
     rfc[..dash].parse().expect("unexpected rfc number")
 }

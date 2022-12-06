@@ -37,9 +37,9 @@ async fn main() -> Result<()> {
 
     // Generate page
     if OUT_DIR.is_dir() {
-        clear_dir(&*OUT_DIR).context("failed to clear out dir")?;
+        clear_dir(&OUT_DIR).context("failed to clear out dir")?;
     } else {
-        fs::create_dir_all(&*OUT_DIR).context("failed to create out dir")?;
+        fs::create_dir_all(*OUT_DIR).context("failed to create out dir")?;
     }
     page_gen::generate(&data).context("failed to generate data")?;
     copy_static_files().context("failed to copy static files")?;
@@ -56,7 +56,7 @@ async fn load_page_gen_data(query: &GitHubQuery<'_>) -> Result<PageGenData> {
 
     let mut issue_data = IssueData::from_file(CACHE_FILE).unwrap_or_default();
     let (latest_tag, _) = try_join(
-        query.query_latest_tag(&*RUSTC_REPO),
+        query.query_latest_tag(&RUSTC_REPO),
         issue_data.fetch_data(query, &fetch_list),
     )
     .await?;

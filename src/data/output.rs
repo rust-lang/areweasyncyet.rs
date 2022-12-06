@@ -80,7 +80,7 @@ impl Builder<'_> {
         Item {
             title: item.title,
             rfc: self.convert_rfc(item.rfc),
-            tracking: self.get_optional_issue(&*RUSTC_REPO, item.tracking),
+            tracking: self.get_optional_issue(&RUSTC_REPO, item.tracking),
             issues: item
                 .issue_label
                 .as_ref()
@@ -89,7 +89,7 @@ impl Builder<'_> {
                         // TODO Don't clone?
                         .labels[&(RUSTC_REPO.clone(), label.clone())]
                         .iter()
-                        .map(|id| self.get_issue(&*RUSTC_REPO, *id))
+                        .map(|id| self.get_issue(&RUSTC_REPO, *id))
                         .collect()
                 })
                 .unwrap_or_default(),
@@ -97,7 +97,7 @@ impl Builder<'_> {
             stabilized: item.stabilized.map(|stabilized| Stabilization {
                 state: self.get_version_state(&stabilized.version),
                 version: stabilized.version,
-                pr: self.get_issue(&*RUSTC_REPO, stabilized.pr),
+                pr: self.get_issue(&RUSTC_REPO, stabilized.pr),
             }),
             unresolved: self.convert_rfc(item.unresolved),
             link: item.link,
@@ -125,7 +125,7 @@ impl Builder<'_> {
     fn convert_rfc(&self, rfc: Option<String>) -> Option<Rfc> {
         let rfc = rfc?;
         let dash = rfc.find('-');
-        let number = rfc[..dash.unwrap_or_else(|| rfc.len())]
+        let number = rfc[..dash.unwrap_or(rfc.len())]
             .parse()
             .expect("unexpected rfc number");
         let (url, merged) = if dash.is_none() {
@@ -134,14 +134,14 @@ impl Builder<'_> {
                 false,
             )
         } else {
-            let hash = rfc.find('#').unwrap_or_else(|| rfc.len());
+            let hash = rfc.find('#').unwrap_or(rfc.len());
             let (page, frag) = rfc.split_at(hash);
             (
                 format!("https://rust-lang.github.io/rfcs/{}.html{}", page, frag),
                 true,
             )
         };
-        let issue = self.get_issue(&*RFC_REPO, number);
+        let issue = self.get_issue(&RFC_REPO, number);
         Some(Rfc { issue, url, merged })
     }
 

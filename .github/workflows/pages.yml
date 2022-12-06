@@ -26,6 +26,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Setup Rust toolchain
+        id: toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable

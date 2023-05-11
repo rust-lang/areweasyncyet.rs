@@ -3,7 +3,7 @@ use regex::{Captures, Regex};
 use std::collections::HashMap;
 use tera::{self, Value};
 
-static RE_CODIFY: Lazy<Regex> = Lazy::new(|| Regex::new(r"\&#96;(.+?)\&#96;").unwrap());
+static RE_CODIFY: Lazy<Regex> = Lazy::new(|| Regex::new(r"`(.+?)`").unwrap());
 
 pub fn codify(value: &Value, _: &HashMap<String, Value>) -> tera::Result<Value> {
     let value = match value {

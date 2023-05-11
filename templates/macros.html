@@ -1,7 +1,7 @@
 {%- macro render_items(items) %}
   {%- for item in items | reverse %}
     <li>
-      {{ item.title | codify }}
+      {{ item.title | escape | codify | safe }}
       {%- if item.unresolved %}
         <a class="unresolved"
           href="{{ item.unresolved.url }}"
@@ -9,7 +9,7 @@
         {%- continue %}
       {%- endif %}
       {%- if item.link %}
-        <a href="{{ item.link.url }}">{{ item.link.text | codify }}</a>
+        <a href="{{ item.link.url }}">{{ item.link.text | escape | codify | safe }}</a>
         {%- continue %}
       {%- endif %}
       {%- if not item.stabilized %}
@@ -68,6 +68,6 @@
   <li>
     <a class="{{ class }}"
         href="{{ issue.number | issue_url }}"
-        title="{{ issue.title }}">#{{ issue.number }} - {{ issue.title | codify }}</a>
+        title="{{ issue.title }}">#{{ issue.number }} - {{ issue.title | escape | codify | safe }}</a>
   </li>
 {%- endmacro %}

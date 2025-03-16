@@ -17,7 +17,7 @@
   <a href="https://crates.io/crates/futures">futures</a>,
   <a href="https://crates.io/crates/mio">mio</a>,
   <a href="https://crates.io/crates/tokio">tokio</a>, and
-  <a href="https://crates.io/crates/async-std">async-std</a>.
+  <a href="https://crates.io/crates/smol">smol</a>.
 </p>
 <h2><code>async</code> syntax and blockers</h2>
 <ul id="async-blockers">
@@ -36,10 +36,12 @@
     <a href="https://github.com/tokio-rs/tokio/issues/1201">#1201</a>
   </li>
   <li>
-    <a href="https://crates.io/crates/async-std">async-std</a> -
-    Async version of the Rust standard library. It provides all the interfaces
-    you are used to, but in an async version and designed for Rust's
-    <code>async</code>/<code>await</code> syntax.
+    <a href="https://crates.io/crates/smol">smol</a> -
+    A small, fast, modular async runtime. It provides all the interfaces you
+    are used to, but in an async version and designed for Rust's
+    <code>async</code>/<code>await</code> syntax. Most of its functionality is
+    re-exported from other small crates, which you can use directly if you
+    don't need all of <code>smol</code>.
   </li>
   <li>
     <a href="https://crates.io/crates/actix">actix</a> -

@@ -22,9 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
       - name: Setup Pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v6
       - name: Setup Rust toolchain
         id: toolchain
         run: |
@@ -33,7 +33,7 @@ jobs:
           echo "rustc_hash=$(rustc -vV | sed -n 's/^commit-hash: //p')" >> "$GITHUB_OUTPUT"
 
       - name: Cache Cargo
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/bin/
@@ -44,7 +44,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
       - name: Cache target
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: target/
           key: ${{ runner.os }}-build-${{ steps.toolchain.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
@@ -55,7 +55,7 @@ jobs:
       - name: Build static pages
         run: cargo run
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v5
 
   deploy:
     environment:
@@ -66,4 +66,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v5
